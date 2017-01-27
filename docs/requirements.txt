@@ -1,0 +1,4 @@
+pip
+Sphinx
+guzzle_sphinx_theme
+mock

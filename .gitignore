@@ -87,3 +87,10 @@ ENV/
 
 # Rope project settings
 .ropeproject
+Supprimerait .idea/
+Supprimerait .gitignore
+Supprimerait GLXBob.rst
+Supprimerait _static/
+Supprimerait _templates/
+Supprimerait conf.py
+Supprimerait index.rst
