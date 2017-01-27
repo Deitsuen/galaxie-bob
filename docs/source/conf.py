@@ -6,6 +6,8 @@ import sys
 from mock import MagicMock
 import re
 
+sys.path.insert(0, os.path.abspath('../..'))
+
 #
 # Galaxie BoB documentation build configuration file, created by
 # sphinx-quickstart on Fri Jan 27 13:25:39 2017.
@@ -39,8 +41,8 @@ import re
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.imgmath',
     'sphinx.ext.viewcode',
+    'guzzle_sphinx_theme',
     'sphinx.ext.githubpages'
 ]
 

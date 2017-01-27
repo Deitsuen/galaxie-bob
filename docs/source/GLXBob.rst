@@ -1,6 +1,18 @@
 GLXBob package
 ==============
 
+Submodules
+----------
+
+GLXBob.MainLoop module
+----------------------
+
+.. automodule:: GLXBob.MainLoop
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
 Module contents
 ---------------
 

@@ -12,6 +12,17 @@ Welcome to Galaxie BoB's documentation!
    GLXBob
 
 
+License
+=======
+GNU GENERAL PUBLIC LICENSE Version 3
+
+
+See the LICENCE_
+
+.. _LICENCE: https://github.com/Tuuux/galaxie-bob/blob/master/LICENSE
+
+All contributions to the project source code ("patches") SHALL use the same license as the project.
+
 Indices and tables
 ==================
 
