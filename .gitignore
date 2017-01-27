@@ -94,3 +94,5 @@ Supprimerait _static/
 Supprimerait _templates/
 Supprimerait conf.py
 Supprimerait index.rst
+Supprimerait source/_static/
+Supprimerait source/_templates/
