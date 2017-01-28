@@ -187,17 +187,16 @@ class MainLoop(object):
 
                 # Do stuff that might take significant time here
 
-                slepp_for = 1.0 / randint(25, 150)
+                slepp_for = 1.0 / randint(10, 150)
                 sleep(slepp_for)
 
                 # Timer control
                 if timer.tick():
                     take_time = (self.get_time() - starting_time)
-                    print('   {1} fps, iteration take {0} sec'.format(take_time, timer.get_fps()))
+                    print('    {1} fps, iteration take {0} sec'.format(take_time, timer.get_fps()))
                 else:
                     take_time = (self.get_time() - starting_time)
-                    print('OK {1} fps, iteration take {0} sec'.format(take_time, timer.get_fps()))
-
+                    print('OK  {1} fps, iteration take {0} sec'.format(take_time, timer.get_fps()))
 
             except KeyboardInterrupt:
                 Signal("QUIT", KeyboardInterrupt, self.quit)
