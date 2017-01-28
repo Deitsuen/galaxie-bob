@@ -3,16 +3,23 @@
 
 import logging
 from time import time, sleep, localtime
+from random import randint
 import os
 import psutil
-
+from GLXBob import Timer
 import math
 
 
 # It script it publish under GNU GENERAL PUBLIC LICENSE
 # http://www.gnu.org/licenses/gpl-3.0.en.html
 # Author: Jérôme ORNECH alias "Tuux" <tuxa@rtnp.org> all rights reserved
-
+def calc_sum(a):
+    a_cum = 0.
+    for i in range(a.shape[0]):
+        for j in range(a.shape[1]):
+            for n in range(a.shape[2]):
+                a_cum = a_cum+a[i,j,n]
+    return a_cum
 
 class Signal(Exception):
     """Generic exception for Galaxie-BoB"""
@@ -43,20 +50,34 @@ class Singleton(type):
 
 class MainLoop(object):
     """
-    ********
-    MainLoop
-    ********
+    :Description:
 
-    The MainLoop is something close to a infinity loop with a start() and stop() method
+    The :class:`MainLoop <GLXBob.MainLoop.MainLoop>` object is a Alderson loop , it's something close to a
+    infinity loop but with a :func:`MainLoop.run() <GLXBob.MainLoop.MainLoop.run()>` and
+     and :func:`MainLoop.quit() <GLXBob.MainLoop.MainLoop.quit()>` method's.
 
-    The main loop make work and sleep the necessary time for impose a Frame Rate. Default 25
+    The :class:`MainLoop <GLXBob.MainLoop.MainLoop>` make it work and take a adaptive sleep for impose a
+    global Frame Rate. Default: 25
+
+    That loop , should be a low power consumption, that was our target for the beginning.
+
+    Feature:
+       * Alderson loop with run() and quit() method
+       * Don't use 100% of CPU Time
+       * Frame Per Second adaptive limitation
+
+    To Do:
+       * The **Event list** size should control interact with Frame Rate Limitation
+       * Limitation will be apply with a knee (percentage) it depende of the **Event list** size
     """
-
-    # __metaclass__ = Singleton
+    # http://code.activestate.com/recipes/579053-high-precision-fps/
+    __metaclass__ = Singleton
 
     def __init__(self):
         """
-        Initialize the mainloop and all attributes
+        :Attributes Details:
+
+
         """
         self.event_buffer = list()
         self._is_running = False
@@ -158,18 +179,29 @@ class MainLoop(object):
 
     def _run(self):
         self.running = True
-
+        timer = Timer()
         while self.is_running:
             try:
+                # Must be the first line
                 starting_time = self.get_time()
-                # ... do stuff that might take significant time here
 
-                # sleep the necessary time
-                time_to_sleep = max(self.get_step_period_time() - (self.get_time() - starting_time), 0)
-                print('{0}: calm down for {1} sec'.format(self.__class__.__name__, time_to_sleep))
-                logging.info('{0}: calm down for {1} sec'.format(self.__class__.__name__, time_to_sleep))
-                sleep(time_to_sleep)
+                # Do stuff that might take significant time here
+
+                slepp_for = 1.0 / randint(25, 150)
+                sleep(slepp_for)
+
+                # Timer control
+                if timer.tick():
+                    take_time = (self.get_time() - starting_time)
+                    print('   {1} fps, iteration take {0} sec'.format(take_time, timer.get_fps()))
+                else:
+                    take_time = (self.get_time() - starting_time)
+                    print('OK {1} fps, iteration take {0} sec'.format(take_time, timer.get_fps()))
+
+
             except KeyboardInterrupt:
                 Signal("QUIT", KeyboardInterrupt, self.quit)
+                break
+            except MemoryError:
                 break
         raise quit('All operation is stop')

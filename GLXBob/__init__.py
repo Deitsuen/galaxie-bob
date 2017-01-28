@@ -5,6 +5,7 @@
 # http://www.gnu.org/licenses/gpl-3.0.en.html
 # Author: Jérôme ORNECH alias "Tuux" <tuxa@rtnp.org> all rights reserved
 
+from GLXBob.Timer import Timer
 from GLXBob.MainLoop import MainLoop
 
 __author__ = u"Jérôme Ornech"
