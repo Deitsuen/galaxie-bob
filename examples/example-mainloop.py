@@ -21,5 +21,4 @@ if __name__ == '__main__':
     logging.info('Started glxbob-demo')
 
     mainloop = GLXBob.MainLoop()
-    mainloop.set_step_size(5)
     mainloop.run()

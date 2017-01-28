@@ -2,24 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from time import time, sleep, localtime
+from time import sleep
 from random import randint
-import os
-import psutil
 from GLXBob import Timer
-import math
-
 
 # It script it publish under GNU GENERAL PUBLIC LICENSE
 # http://www.gnu.org/licenses/gpl-3.0.en.html
 # Author: Jérôme ORNECH alias "Tuux" <tuxa@rtnp.org> all rights reserved
-def calc_sum(a):
-    a_cum = 0.
-    for i in range(a.shape[0]):
-        for j in range(a.shape[1]):
-            for n in range(a.shape[2]):
-                a_cum = a_cum+a[i,j,n]
-    return a_cum
+
 
 class Signal(Exception):
     """Generic exception for Galaxie-BoB"""
@@ -128,15 +118,6 @@ class MainLoop(object):
         """
         return 1.0 / self.get_step_size()
 
-    def get_time(self):
-        """
-        Return the time in seconds since the epoch as a floating point number.
-
-        :return: time in seconds since the epoch
-        :rtype: float
-        """
-        return time()
-
     def is_running(self):
         """
         Checks to see if the MainLoop is currently being run via run().
@@ -179,24 +160,21 @@ class MainLoop(object):
 
     def _run(self):
         self.running = True
-        timer = Timer()
+        timer = Timer(fps=30.0, max_fps=60.0)
         while self.is_running:
             try:
                 # Must be the first line
-                starting_time = self.get_time()
+                starting_time = timer.get_time()
 
                 # Do stuff that might take significant time here
 
-                slepp_for = 1.0 / randint(10, 150)
+                slepp_for = 1.0 / randint(20, 75)
                 sleep(slepp_for)
 
                 # Timer control
                 if timer.tick():
-                    take_time = (self.get_time() - starting_time)
-                    print('    {1} fps, iteration take {0} sec'.format(take_time, timer.get_fps()))
-                else:
-                    take_time = (self.get_time() - starting_time)
-                    print('OK  {1} fps, iteration take {0} sec'.format(take_time, timer.get_fps()))
+                    take_time = timer.get_time() - starting_time
+                    print('{1} fps, iteration take {0} sec'.format(take_time, timer.get_fps()))
 
             except KeyboardInterrupt:
                 Signal("QUIT", KeyboardInterrupt, self.quit)

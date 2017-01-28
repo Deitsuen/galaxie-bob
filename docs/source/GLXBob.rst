@@ -12,6 +12,14 @@ GLXBob.MainLoop module
     :undoc-members:
     :show-inheritance:
 
+GLXBob.Timer module
+-------------------
+
+.. automodule:: GLXBob.Timer
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------
