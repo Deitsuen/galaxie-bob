@@ -10,6 +10,7 @@ Welcome to Galaxie BoB's documentation!
    :maxdepth: 2
 
    GLXBob
+   Basic-Types
 
 
 License
