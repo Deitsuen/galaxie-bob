@@ -160,7 +160,7 @@ class MainLoop(object):
 
     def _run(self):
         self.running = True
-        timer = Timer(fps=30.0, max_fps=10.0)
+        timer = Timer(fps=30.0, max_fps=999999.9)
         while self.is_running:
             try:
                 # Must be the first line
@@ -168,8 +168,8 @@ class MainLoop(object):
 
                 # Do stuff that might take significant time here
 
-                slepp_for = 1.0 / randint(50, 250)
-                sleep(slepp_for)
+                # slepp_for = 1.0 / randint(50, 75)
+                # sleep(slepp_for)
 
                 # Timer control
                 if timer.tick():

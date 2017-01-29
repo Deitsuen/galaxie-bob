@@ -151,7 +151,11 @@ class Timer:
         self.__fps_increment = fps_increment
         self.__max_fps_increment = max_fps_increment
         self.__min_fps_increment = min_fps_increment
+
+        # Internal
+        self.__fps_memory = list()
         self.__frame = 0
+        self.__max_frame = 8
         self.__departure_time = None
 
     def tick(self):
@@ -172,23 +176,24 @@ class Timer:
         :return: :py:obj:`True` when it's time or :py:obj:`False` if the job adjustment of fps should be done
         :rtype: bool
         """
-        if self.__get_departure_time() is None:
-            self.__set_departure_time(self.get_time())
+        if self._get_departure_time() is None:
+            self._set_departure_time(self.get_time())
 
-        self.__frame += 1
+        # Increase Frame
+        self._set_frame(self._get_frame() + 1)
 
         try:
-            target = self.__frame / self.get_fps()
+            target = self._get_frame() / self.get_fps()
         except ZeroDivisionError:
-            target = self.__frame
+            target = self._get_frame()
 
-        passed = self.get_time() - self.__get_departure_time()
+        passed = self.get_time() - self._get_departure_time()
         differ = target - passed
 
         # Reset time reference due to time variation
-        if self.__frame == 8:
-            self.__set_departure_time(self.get_time())
-            self.__frame = 0
+        if self._get_frame() == self._get_max_frame():
+            self._set_departure_time(self.get_time())
+            self._set_frame(0)
 
         if differ <= 0:
             # raise ValueError('cannot maintain desired FPS rate')
@@ -219,7 +224,9 @@ class Timer:
         """
         if type(fps) == float:
             # CLAMP to the abosolut value
-            self.__fps = abs(max(min(self.get_max_fps(), fps), self.get_min_fps()))
+            calmped_value = abs(max(min(self.get_max_fps(), fps), self.get_min_fps()))
+            if self.get_fps() != calmped_value:
+                self.__fps = calmped_value
         else:
             raise TypeError(u'>fps< argument must be a float')
 
@@ -243,7 +250,8 @@ class Timer:
         :raise TypeError: if ``min_fps`` parameter is not a :py:data:`float` type
         """
         if type(min_fps) == float:
-            self.__min_fps = min_fps
+            if self.get_min_fps() != min_fps:
+                self.__min_fps = min_fps
         else:
             raise TypeError(u'>min_fps< argument must be a float')
 
@@ -267,7 +275,8 @@ class Timer:
         :raise TypeError: if ``max_fps`` parameter is not a :py:data:`float` type
         """
         if type(max_fps) == float:
-            self.__max_fps = max_fps
+            if self.get_max_fps() != max_fps:
+                self.__max_fps = max_fps
         else:
             raise TypeError(u'>max_fps< argument must be a float')
 
@@ -292,7 +301,8 @@ class Timer:
         :raise TypeError: if ``fps_increment`` parameter is not a :py:data:`float` type
         """
         if type(fps_increment) == float:
-            self.__fps_increment = fps_increment
+            if self.get_fps_increment() != fps_increment:
+                self.__fps_increment = fps_increment
         else:
             raise TypeError(u'>fps< argument must be a float')
 
@@ -321,7 +331,8 @@ class Timer:
         :raise TypeError: if ``min_fps_increment`` parameter is not a :py:data:`float` type
         """
         if type(min_fps_increment) == float:
-            self.__min_fps_increment = min_fps_increment
+            if self.get_min_fps_increment() != min_fps_increment:
+                self.__min_fps_increment = min_fps_increment
         else:
             raise TypeError(u'>min_fps_increment< argument must be a float')
 
@@ -354,7 +365,8 @@ class Timer:
         :raise TypeError: if ``max_fps_increment`` parameter is not a :py:data:`float` type
         """
         if type(max_fps_increment) == float:
-            self.__max_fps_increment = max_fps_increment
+            if self.get_max_fps_increment() != max_fps_increment:
+                self.__max_fps_increment = max_fps_increment
         else:
             raise TypeError(u'>max_fps_increment< argument must be a float')
 
@@ -371,21 +383,86 @@ class Timer:
 
     ###
     # Internal method's
-    def __set_departure_time(self, time_value):
+    def _set_departure_time(self, time_value):
         self.__departure_time = time_value
 
-    def __get_departure_time(self):
+    def _get_departure_time(self):
         return self.__departure_time
 
+    def _get_fps_memory(self):
+        return self.__fps_memory
 
+    def _set_frame(self, frame=0):
+        """
+        Set the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`__frame` attribute.
+
+        It will be use a maximum size of a list it contain :py:attr:`fps` attribute memory
+
+        It must start to int(0), and will be increase by the :class:`Timer <GLXBob.Timer.Timer>`
+
+        :param frame: correspond to the cursor inside memory fps list
+        :type frame: int
+        :raise TypeError: if ``frame`` parameter is not a :py:data:`int` type
+        """
+        if type(frame) == int:
+            if self._get_frame() != frame:
+                self.__frame = frame
+        else:
+            raise TypeError(u'>frame< argument must be a int')
+
+    def _get_frame(self):
+        """
+        Get the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`__frame` attribute.
+
+        You can set :py:attr:`__frame` attribute with
+        :func:`Timer._set_frame() <GLXBob.Timer.Timer._set_frame()>` method.
+
+        :return: ``__frame`` attribute value
+        :rtype: int
+        """
+        return self.__frame
+
+    def _set_max_frame(self, max_frame=8):
+        """
+        Set the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`__frame_max` attribute.
+
+        It will be use a maximum size of a list it contain :py:attr:`fps` attribute memory
+
+        :param max_frame: correspond to the buffer size
+        :type max_frame: int
+        :raise TypeError: if ``max_frame`` parameter is not a :py:data:`int` type
+        """
+        if type(max_frame) == int:
+            if self._get_max_frame() != max_frame:
+                self.__max_frame = max_frame
+        else:
+            raise TypeError(u'>frame_max< argument must be a int')
+
+    def _get_max_frame(self):
+        """
+        Get the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`__frame_max` attribute.
+
+        You can set :py:attr:`__frame_max` attribute with
+        :func:`Timer._set_frame_max() <GLXBob.Timer.Timer._set_frame_max()>` method.
+
+        :return: ``__frame_max`` attribute value
+        :rtype: int
+        """
+        return self.__max_frame
+
+
+# Unittest
 class TestTimer(unittest.TestCase):
 
     def setUp(self):
+        # Before the test start
         print ('')
 
     def tearDown(self):
+        # When the test is finish
         print(str(self.shortDescription()) + ' ... OK')
 
+    # Test "fps" attribute
     def test_get_set_fps(self):
         """Test fps attribute with set_fps() and get_fps() method's"""
         timer = Timer()
@@ -400,6 +477,7 @@ class TestTimer(unittest.TestCase):
         random_value = randint(1, 250)
         self.assertRaises(TypeError, timer.set_fps, int(random_value))
 
+    # Test "min_fps" attribute
     def test_get_set_min_fps(self):
         """Test min_fps attribute with set_min_fps() and get_min_fps() method's"""
         timer = Timer()
@@ -413,6 +491,7 @@ class TestTimer(unittest.TestCase):
         random_value = randint(1, 250)
         self.assertRaises(TypeError, timer.set_min_fps, int(random_value))
 
+    # Test "max_fps" attribute
     def test_get_set_max_fps(self):
         """Test max_fps attribute with set_max_fps() and get_max_fps() method's"""
         timer = Timer()
@@ -426,6 +505,7 @@ class TestTimer(unittest.TestCase):
         random_value = randint(1, 250)
         self.assertRaises(TypeError, timer.set_max_fps, int(random_value))
 
+    # Test "fps_increment" attribute
     def test_get_set_fps_increment(self):
         """Test fps_increment attribute with set_fps_increment() and get_fps_increment() method's"""
         timer = Timer()
@@ -439,6 +519,7 @@ class TestTimer(unittest.TestCase):
         random_value = randint(1, 250)
         self.assertRaises(TypeError, timer.set_fps_increment, int(random_value))
 
+    # Test "min_fps_increment" attribute
     def test_get_set_min_fps_increment(self):
         """Test min_fps_increment attribute with set_min_fps_increment() and get_min_fps_increment() method's"""
         timer = Timer()
@@ -452,7 +533,7 @@ class TestTimer(unittest.TestCase):
         random_value = randint(1, 250)
         self.assertRaises(TypeError, timer.set_min_fps_increment, int(random_value))
 
-    # Test max_fps attribute
+    # Test "max_fps_increment" attribute
     def test_get_set_max_fps_increment(self):
         """Test max_fps_increment attribute with set_max_fps_increment() and get_min_fps_increment() method's"""
         timer = Timer()
@@ -474,6 +555,36 @@ class TestTimer(unittest.TestCase):
         returned_value_2 = timer.get_time()
         self.assertLessEqual(returned_value_1, returned_value_2)
 
+    ########################
+    # Test internal method #
+    ########################
+    # Test "max_frame" attribute
+    def test_get_set__max_frame(self):
+        """Test max_frame attribute with _set_frame_max() and _get_frame_max() method's"""
+        timer = Timer()
+        random_value = randint(1, 250)
+        timer._set_max_frame(int(random_value))
+        self.assertEqual(timer._get_max_frame(), float(random_value))
+
+    def test_raise_typeerror_set__max_frame(self):
+        """Test if _set_frame_max() raise TypeError when use a wrong type"""
+        timer = Timer()
+        random_value = randint(1, 250)
+        self.assertRaises(TypeError, timer._set_max_frame, float(random_value))
+
+    # Test "frame" attribute
+    def test_get_set__frame(self):
+        """Test frame attribute with _set_frame() and _get_frame() method's"""
+        timer = Timer()
+        random_value = randint(1, 250)
+        timer._set_frame(int(random_value))
+        self.assertEqual(timer._get_frame(), float(random_value))
+
+    def test_raise_typeerror_set__frame(self):
+        """Test if _set_frame() raise TypeError when use a wrong type"""
+        timer = Timer()
+        random_value = randint(1, 250)
+        self.assertRaises(TypeError, timer._set_frame, float(random_value))
 
 # Run test if call directly
 if __name__ == '__main__':
