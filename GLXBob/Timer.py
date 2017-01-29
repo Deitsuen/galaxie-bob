@@ -3,7 +3,7 @@
 
 from time import time, sleep
 import unittest
-from random import randint
+from random import randint, sample
 import sys
 
 # It script it publish under GNU GENERAL PUBLIC LICENSE
@@ -182,6 +182,7 @@ class Timer:
         # Increase Frame
         self._set_frame(self._get_frame() + 1)
 
+        # The algho
         try:
             target = self._get_frame() / self.get_fps()
         except ZeroDivisionError:
@@ -384,12 +385,47 @@ class Timer:
     ###
     # Internal method's
     def _set_departure_time(self, time_value):
-        self.__departure_time = time_value
+        """
+        Store a :func:`Timer.get_time() <GLXBob.Timer.Timer.get_time()>` return value inside
+        :py:attr:`__departure_time` attribute.
+
+        :param time_value: return value inside :py:attr:`__departure_time` attribute.
+        :type time_value: a :func:`Timer.get_time() <GLXBob.Timer.Timer.get_time()>` return
+        """
+        if self._get_departure_time() != time_value:
+            self.__departure_time = time_value
 
     def _get_departure_time(self):
+        """
+        Return the value set by a :func:`Timer._set_departure_time() <GLXBob.Timer.Timer._set_departure_time()>`
+
+        :return: return :py:attr:`__departure_time` attribute.
+        :rtype: :func:`time.time() <time.time()>`
+        """
         return self.__departure_time
 
+    def _set_fps_memory(self, fps_memory=None):
+        """
+        Store a :py:obj:`list` inside :py:attr:`__fps_memory` attribute
+
+        :param fps_memory: :py:obj:`list` or :py:obj:`None` if want to reset the list
+        :type fps_memory: :py:obj:`list` or :py:obj:`None`
+        """
+        if type(fps_memory) == list or fps_memory is None:
+            if fps_memory is None:
+                fps_memory = list()
+            if self._get_fps_memory() != fps_memory:
+                self.__fps_memory = fps_memory
+        else:
+            raise TypeError(u'>fps_memory< argument must be a list or None')
+
     def _get_fps_memory(self):
+        """
+        Get the :py:attr:`__fps_memory` attribute value
+
+        :return: :py:attr:`__fps_memory` attribute value
+        :rtype: list
+        """
         return self.__fps_memory
 
     def _set_frame(self, frame=0):
@@ -585,6 +621,28 @@ class TestTimer(unittest.TestCase):
         timer = Timer()
         random_value = randint(1, 250)
         self.assertRaises(TypeError, timer._set_frame, float(random_value))
+
+    # Test "departure_time" attribute
+    def test_get_set__departure_time(self):
+        """Test __departure_time attribute with _set_departure_time() and _get_departure_time() method's"""
+        timer = Timer()
+        tested_value = time()
+        timer._set_departure_time(tested_value)
+        self.assertEqual(timer._get_departure_time(), tested_value)
+
+    # Test "fps_memory" attribute
+    def test_get_set__fps_memory(self):
+        """Test fps_memory attribute with _set_fps_memory() and _get_fps_memory() method's"""
+        timer = Timer()
+        value_list = sample(range(30), 4)
+        timer._set_fps_memory(value_list)
+        self.assertEqual(timer._get_fps_memory(), value_list)
+
+    def test_raise_typeerror__set_fps_memory(self):
+        """Test if _set_fps_memory() raise TypeError when use a wrong type"""
+        timer = Timer()
+        random_value = randint(1, 250)
+        self.assertRaises(TypeError, timer._set_fps_memory, float(random_value))
 
 # Run test if call directly
 if __name__ == '__main__':
