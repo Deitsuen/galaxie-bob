@@ -154,13 +154,13 @@ class MainLoop(object):
         Set the is_running attribute
 
         :param boolean: 0 or True
-        :type boolean: Boolean
+        :type boolean: bool
         """
         self._is_running = bool(boolean)
 
     def _run(self):
         self.running = True
-        timer = Timer(fps=30.0, max_fps=60.0)
+        timer = Timer(fps=30.0, max_fps=10.0)
         while self.is_running:
             try:
                 # Must be the first line

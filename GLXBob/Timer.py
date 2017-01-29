@@ -379,7 +379,7 @@ class Timer:
 
 
 class TestTimer(unittest.TestCase):
-    # preparing to test
+
     def setUp(self):
         print ('')
 
