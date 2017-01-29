@@ -153,7 +153,7 @@ class Timer:
         self.__min_fps_increment = min_fps_increment
 
         # Internal
-        self.__fps_memory = list()
+        self.__fps_memory = [25.0, 25.0, 25.0, 25.0, 25.0, 25.0, 25.0, 25.0, 25.0]
         self.__frame = 0
         self.__max_frame = 8
         self.__departure_time = None
@@ -192,9 +192,11 @@ class Timer:
         differ = target - passed
 
         # Reset time reference due to time variation
-        if self._get_frame() == self._get_max_frame():
+        if self._get_frame() > self._get_max_frame():
             self._set_departure_time(self.get_time())
             self._set_frame(0)
+
+        self._get_fps_memory()[self._get_frame()] = self.get_fps()
 
         if differ <= 0:
             # raise ValueError('cannot maintain desired FPS rate')
@@ -413,7 +415,7 @@ class Timer:
         """
         if type(fps_memory) == list or fps_memory is None:
             if fps_memory is None:
-                fps_memory = list()
+                fps_memory = [25.0, 25.0, 25.0, 25.0, 25.0, 25.0, 25.0, 25.0, 25.0]
             if self._get_fps_memory() != fps_memory:
                 self.__fps_memory = fps_memory
         else:
