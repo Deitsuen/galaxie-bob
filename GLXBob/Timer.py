@@ -3,8 +3,14 @@
 
 from time import time, sleep
 import unittest
-
 from random import randint
+import sys
+
+# It script it publish under GNU GENERAL PUBLIC LICENSE
+# http://www.gnu.org/licenses/gpl-3.0.en.html
+# Author: Jérôme ORNECH alias "Tuux" <tuxa at rtnp dot org> all rights reserved
+
+# Reference Document: http://code.activestate.com/recipes/579053-high-precision-fps/
 class Timer:
     """
     :Description:
@@ -373,8 +379,15 @@ class Timer:
 
 
 class TestTimer(unittest.TestCase):
+    # preparing to test
+    def setUp(self):
+        print ('')
+
+    def tearDown(self):
+        print(str(self.shortDescription()) + ' ... OK')
 
     def test_get_set_fps(self):
+        """Test fps attribute with set_fps() and get_fps() method's"""
         timer = Timer()
         random_value = randint(1, 250)
         timer.set_max_fps(float(random_value))
@@ -382,72 +395,84 @@ class TestTimer(unittest.TestCase):
         self.assertEqual(float(random_value), timer.get_fps())
 
     def test_raise_typeerror_set_fps(self):
+        """Test raise TypeError when set fps with worng type"""
         timer = Timer()
         random_value = randint(1, 250)
         self.assertRaises(TypeError, timer.set_fps, int(random_value))
 
     def test_get_set_min_fps(self):
+        """Test min_fps attribute with set_min_fps() and get_min_fps() method's"""
         timer = Timer()
         random_value = randint(1, 250)
         timer.set_min_fps(float(random_value))
         self.assertEqual(timer.get_min_fps(), float(random_value))
 
     def test_raise_typeerror_set_min_fps(self):
+        """Test raise TypeError when set min_fps with worng type"""
         timer = Timer()
         random_value = randint(1, 250)
         self.assertRaises(TypeError, timer.set_min_fps, int(random_value))
 
     def test_get_set_max_fps(self):
+        """Test max_fps attribute with set_max_fps() and get_max_fps() method's"""
         timer = Timer()
         random_value = randint(1, 250)
         timer.set_max_fps(float(random_value))
         self.assertEqual(timer.get_max_fps(), float(random_value))
 
     def test_raise_typeerror_set_max_fps(self):
+        """Test raise TypeError when set max_fps with worng type"""
         timer = Timer()
         random_value = randint(1, 250)
         self.assertRaises(TypeError, timer.set_max_fps, int(random_value))
 
     def test_get_set_fps_increment(self):
+        """Test fps_increment attribute with set_fps_increment() and get_fps_increment() method's"""
         timer = Timer()
         random_value = randint(1, 250)
         timer.set_fps_increment(float(random_value))
         self.assertEqual(timer.get_fps_increment(), float(random_value))
 
     def test_raise_typeerror_set_fps_increment(self):
+        """Test raise TypeError when set fps_increment with worng type"""
         timer = Timer()
         random_value = randint(1, 250)
         self.assertRaises(TypeError, timer.set_fps_increment, int(random_value))
 
     def test_get_set_min_fps_increment(self):
+        """Test min_fps_increment attribute with set_min_fps_increment() and get_min_fps_increment() method's"""
         timer = Timer()
         random_value = randint(1, 250)
         timer.set_min_fps_increment(float(random_value))
         self.assertEqual(timer.get_min_fps_increment(), float(random_value))
 
     def test_raise_typeerror_set_min_fps_increment(self):
+        """Test raise TypeError when set min_fps_increment with worng type"""
         timer = Timer()
         random_value = randint(1, 250)
         self.assertRaises(TypeError, timer.set_min_fps_increment, int(random_value))
 
     # Test max_fps attribute
     def test_get_set_max_fps_increment(self):
+        """Test max_fps_increment attribute with set_max_fps_increment() and get_min_fps_increment() method's"""
         timer = Timer()
         random_value = randint(1, 250)
         timer.set_max_fps_increment(float(random_value))
         self.assertEqual(timer.get_max_fps_increment(), float(random_value))
 
     def test_raise_typeerror_set_max_fps_increment(self):
+        """Test raise TypeError when set max_fps_increment with worng type"""
         timer = Timer()
         random_value = randint(1, 250)
         self.assertRaises(TypeError, timer.set_max_fps_increment, int(random_value))
 
     # Test get_time()
     def test_get_time_return(self):
+        """Test get_time() method"""
         timer = Timer()
         returned_value_1 = timer.get_time()
         returned_value_2 = timer.get_time()
-        self.assertNotEqual(returned_value_1, returned_value_2)
+        self.assertLessEqual(returned_value_1, returned_value_2)
 
 
 # Run test if call directly
