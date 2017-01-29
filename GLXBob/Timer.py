@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from time import time, sleep
+import unittest
 
-
+from random import randint
 class Timer:
     """
     :Description:
@@ -249,7 +250,7 @@ class Timer:
         """
         return self.__min_fps
 
-    def set_max_fps(self, max_fps=60):
+    def set_max_fps(self, max_fps=60.0):
         """
         Set the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`max_fps` attribute value.
 
@@ -371,3 +372,84 @@ class Timer:
         return self.__departure_time
 
 
+class TestTimer(unittest.TestCase):
+
+    def test_get_set_fps(self):
+        timer = Timer()
+        random_value = randint(1, 250)
+        timer.set_max_fps(float(random_value))
+        timer.set_fps(float(random_value))
+        self.assertEqual(float(random_value), timer.get_fps())
+
+    def test_raise_typeerror_set_fps(self):
+        timer = Timer()
+        random_value = randint(1, 250)
+        self.assertRaises(TypeError, timer.set_fps, int(random_value))
+
+    def test_get_set_min_fps(self):
+        timer = Timer()
+        random_value = randint(1, 250)
+        timer.set_min_fps(float(random_value))
+        self.assertEqual(timer.get_min_fps(), float(random_value))
+
+    def test_raise_typeerror_set_min_fps(self):
+        timer = Timer()
+        random_value = randint(1, 250)
+        self.assertRaises(TypeError, timer.set_min_fps, int(random_value))
+
+    def test_get_set_max_fps(self):
+        timer = Timer()
+        random_value = randint(1, 250)
+        timer.set_max_fps(float(random_value))
+        self.assertEqual(timer.get_max_fps(), float(random_value))
+
+    def test_raise_typeerror_set_max_fps(self):
+        timer = Timer()
+        random_value = randint(1, 250)
+        self.assertRaises(TypeError, timer.set_max_fps, int(random_value))
+
+    def test_get_set_fps_increment(self):
+        timer = Timer()
+        random_value = randint(1, 250)
+        timer.set_fps_increment(float(random_value))
+        self.assertEqual(timer.get_fps_increment(), float(random_value))
+
+    def test_raise_typeerror_set_fps_increment(self):
+        timer = Timer()
+        random_value = randint(1, 250)
+        self.assertRaises(TypeError, timer.set_fps_increment, int(random_value))
+
+    def test_get_set_min_fps_increment(self):
+        timer = Timer()
+        random_value = randint(1, 250)
+        timer.set_min_fps_increment(float(random_value))
+        self.assertEqual(timer.get_min_fps_increment(), float(random_value))
+
+    def test_raise_typeerror_set_min_fps_increment(self):
+        timer = Timer()
+        random_value = randint(1, 250)
+        self.assertRaises(TypeError, timer.set_min_fps_increment, int(random_value))
+
+    # Test max_fps attribute
+    def test_get_set_max_fps_increment(self):
+        timer = Timer()
+        random_value = randint(1, 250)
+        timer.set_max_fps_increment(float(random_value))
+        self.assertEqual(timer.get_max_fps_increment(), float(random_value))
+
+    def test_raise_typeerror_set_max_fps_increment(self):
+        timer = Timer()
+        random_value = randint(1, 250)
+        self.assertRaises(TypeError, timer.set_max_fps_increment, int(random_value))
+
+    # Test get_time()
+    def test_get_time_return(self):
+        timer = Timer()
+        returned_value_1 = timer.get_time()
+        returned_value_2 = timer.get_time()
+        self.assertNotEqual(returned_value_1, returned_value_2)
+
+
+# Run test if call directly
+if __name__ == '__main__':
+    unittest.main()
