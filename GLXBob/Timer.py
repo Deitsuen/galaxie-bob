@@ -2,16 +2,14 @@
 # -*- coding: utf-8 -*-
 
 from time import time, sleep
-import unittest
-from random import randint, sample
-import sys
 
 # It script it publish under GNU GENERAL PUBLIC LICENSE
 # http://www.gnu.org/licenses/gpl-3.0.en.html
 # Author: Jérôme ORNECH alias "Tuux" <tuxa at rtnp dot org> all rights reserved
 
+
 # Reference Document: http://code.activestate.com/recipes/579053-high-precision-fps/
-class Timer:
+class Timer(object):
     """
     :Description:
 
@@ -25,29 +23,29 @@ class Timer:
     """
     def __init__(self,
                  fps=10.0,
-                 max_fps=60.0,
-                 min_fps=1.0,
+                 fps_max=60.0,
+                 fps_min=1.0,
                  fps_increment=0.1,
-                 min_fps_increment=0.1,
-                 max_fps_increment=1.0
+                 fps_min_increment=0.1,
+                 fps_max_increment=1.0
                  ):
         """
         :param fps: how many time 1 second is divided
-        :param max_fps: maximum fps allowed before apply a hard limit rate
-        :param min_fps: minimum fps where the power saving should stop to decrease fps
+        :param fps_max: maximum fps allowed before apply a hard limit rate
+        :param fps_min: minimum fps where the power saving should stop to decrease fps
         :param fps_increment:
-        :param min_fps_increment: the lower allowed increment value
-        :param max_fps_increment: the upper allowed increment value
+        :param fps_min_increment: the lower allowed increment value
+        :param fps_max_increment: the upper allowed increment value
         :type fps: float
-        :type max_fps: float
-        :type min_fps: float
+        :type fps_max: float
+        :type fps_min: float
         :type fps_increment: float
-        :type min_fps_increment: float
-        :type max_fps_increment: float
+        :type fps_min_increment: float
+        :type fps_max_increment: float
 
         :Attributes Details:
 
-        .. py:attribute:: fps
+        .. py:attribute:: __fps
 
            The number of Frames per second. (in **fps**)
 
@@ -58,7 +56,7 @@ class Timer:
 
            The ``value`` passed as argument to
            :func:`Timer.set_fps() <GLXBob.Timer.Timer.set_fps()>` method is clamped
-           to lie between :py:attr:`min_fps` and :py:attr:`max_fps`
+           to lie between :py:attr:`__fps_min` and :py:attr:`__fps_max`
            attributes.
 
               +---------------+-------------------------------+
@@ -69,10 +67,10 @@ class Timer:
               | Default value | 25.0                          |
               +---------------+-------------------------------+
 
-        .. py:attribute:: min_fps
+        .. py:attribute:: __fps_min
 
            The min Frames number per second allowed before the :class:`Timer <GLXBob.Timer.Timer>` stop to apply
-           a rate limit to the :py:attr:`fps` attribute. (in **fps**)
+           a rate limit to the :py:attr:`__fps` attribute. (in **fps**)
 
            It can be considered as the min value of the CLAMP process
 
@@ -84,10 +82,10 @@ class Timer:
               | Default value | 2.0                           |
               +---------------+-------------------------------+
 
-        .. py:attribute:: max_fps
+        .. py:attribute:: __fps_max
 
            The maximum Frames number per second allowed before the :class:`Timer <GLXBob.Timer.Timer>` start to rate
-           limit the :py:attr:`fps` attribute.
+           limit the :py:attr:`__fps` attribute.
 
            It can be considered as the max value of the CLAMP process
 
@@ -99,27 +97,12 @@ class Timer:
               | Default value | 60.0                          |
               +---------------+-------------------------------+
 
-        .. py:attribute:: fps_increment
+        .. py:attribute:: __fps_increment
 
-           The self-correcting timing algorithms will try to increase or decrease :py:attr:`fps` attribute
-           with the :py:attr:`fps_increment` attribute value.
+           The self-correcting timing algorithms will try to increase or decrease :py:attr:`__fps` attribute
+           with the :py:attr:`__fps_increment` attribute value.
 
-           Note: the ``fps_increment`` parameter is not clamp
-
-              +---------------+-------------------------------+
-              | Type          | :py:data:`float`              |
-              +---------------+-------------------------------+
-              | Flags         | Read / Write                  |
-              +---------------+-------------------------------+
-              | Default value | 0.1                           |
-              +---------------+-------------------------------+
-
-        .. py:attribute:: min_fps_increment
-
-           :py:attr:`min_fps_increment` is the lower allowed increment value
-
-           The self-correcting timing will try to adjust :py:attr:`fps` attribute
-           in range of :py:attr:`min_fps_increment` to :py:attr:`max_fps_increment`
+           Note: the ``__fps_increment`` parameter is not clamp
 
               +---------------+-------------------------------+
               | Type          | :py:data:`float`              |
@@ -129,12 +112,27 @@ class Timer:
               | Default value | 0.1                           |
               +---------------+-------------------------------+
 
-        .. py:attribute:: max_fps_increment
+        .. py:attribute:: __fps_min_increment
 
-           :py:attr:`max_fps_increment` is the upper allowed increment value
+           :py:attr:`__fps_min_increment` is the lower allowed increment value
 
            The self-correcting timing will try to adjust :py:attr:`fps` attribute
-           in range of :py:attr:`min_fps_increment` to :py:attr:`max_fps_increment`
+           in range of :py:attr:`__fps_min_increment` to :py:attr:`__fps_max_increment`
+
+              +---------------+-------------------------------+
+              | Type          | :py:data:`float`              |
+              +---------------+-------------------------------+
+              | Flags         | Read / Write                  |
+              +---------------+-------------------------------+
+              | Default value | 0.1                           |
+              +---------------+-------------------------------+
+
+        .. py:attribute:: __fps_max_increment
+
+           :py:attr:`__fps_max_increment` is the upper allowed increment value
+
+           The self-correcting timing will try to adjust :py:attr:`fps` attribute
+           in range of :py:attr:`__fps_min_increment` to :py:attr:`__fps_max_increment`
 
               +---------------+-------------------------------+
               | Type          | :py:data:`float`              |
@@ -146,17 +144,17 @@ class Timer:
 
         """
         self.__fps = fps
-        self.__min_fps = min_fps
-        self.__max_fps = max_fps
         self.__fps_increment = fps_increment
-        self.__max_fps_increment = max_fps_increment
-        self.__min_fps_increment = min_fps_increment
+        self.__fps_min = fps_min
+        self.__fps_min_increment = fps_min_increment
+        self.__fps_max = fps_max
+        self.__fps_max_increment = fps_max_increment
 
         # Internal
-        self.__fps_memory = [25.0, 25.0, 25.0, 25.0, 25.0, 25.0, 25.0, 25.0, 25.0]
+        self.__fps_memory = list()
         self.__frame = 0
-        self.__max_frame = 8
-        self.__departure_time = None
+        self.__frame_max = 8
+        self.__time_departure = None
 
     def tick(self):
         """
@@ -176,8 +174,8 @@ class Timer:
         :return: :py:obj:`True` when it's time or :py:obj:`False` if the job adjustment of fps should be done
         :rtype: bool
         """
-        if self._get_departure_time() is None:
-            self._set_departure_time(self.get_time())
+        if self._get_time_departure() is None:
+            self._set_time_departure(self.get_time())
 
         # Increase Frame
         self._set_frame(self._get_frame() + 1)
@@ -188,15 +186,30 @@ class Timer:
         except ZeroDivisionError:
             target = self._get_frame()
 
-        passed = self.get_time() - self._get_departure_time()
+        passed = self.get_time() - self._get_time_departure()
         differ = target - passed
 
         # Reset time reference due to time variation
-        if self._get_frame() > self._get_max_frame():
-            self._set_departure_time(self.get_time())
+        if self._get_frame() > self._get_frame_max():
+            self._set_time_departure(self.get_time())
             self._set_frame(0)
 
-        self._get_fps_memory()[self._get_frame()] = self.get_fps()
+            # Determine a increment multiplicator for have fast convergence
+            ref = self._get_fps_memory()[len(self._get_fps_memory()) / 2]
+            half = self._get_fps_memory()[:len(self._get_fps_memory()) / 2]
+            rest = self._get_fps_memory()[len(self._get_fps_memory()) / 2:]
+            half_sum = sum(half)
+            rest_sum = sum(rest)
+
+            if rest_sum > half_sum:
+                print('DOWN')
+            elif rest_sum == half_sum:
+                print('STABILIZE')
+            else:
+                print('UP')
+
+        # Monitor the frame rate
+        self._push_fps_memory(self.get_fps())
 
         if differ <= 0:
             # raise ValueError('cannot maintain desired FPS rate')
@@ -217,7 +230,7 @@ class Timer:
         """
         return time()
 
-    def set_fps(self, fps=25.0):
+    def set_fps(self, fps=25.00):
         """
         Set the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`fps` attribute.
 
@@ -227,9 +240,12 @@ class Timer:
         """
         if type(fps) == float:
             # CLAMP to the abosolut value
-            calmped_value = abs(max(min(self.get_max_fps(), fps), self.get_min_fps()))
-            if self.get_fps() != calmped_value:
-                self.__fps = calmped_value
+            clamped_value = abs(max(min(self.get_fps_max(), fps), self.get_fps_min()))
+            # Round to two digit
+            clamped_value = round(clamped_value, 2)
+
+            if self.get_fps() != clamped_value:
+                self.__fps = clamped_value
         else:
             raise TypeError(u'>fps< argument must be a float')
 
@@ -242,7 +258,7 @@ class Timer:
         """
         return self.__fps
 
-    def set_min_fps(self, min_fps=0.1):
+    def set_fps_min(self, min_fps=0.1):
         """
         Set the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`min_fps` attribute value.
 
@@ -253,21 +269,21 @@ class Timer:
         :raise TypeError: if ``min_fps`` parameter is not a :py:data:`float` type
         """
         if type(min_fps) == float:
-            if self.get_min_fps() != min_fps:
-                self.__min_fps = min_fps
+            if self.get_fps_min() != min_fps:
+                self.__fps_min = min_fps
         else:
             raise TypeError(u'>min_fps< argument must be a float')
 
-    def get_min_fps(self):
+    def get_fps_min(self):
         """
-        Get the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`min_fps` attribute value.
+        Get the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`fps_min` attribute value.
 
         :return: :py:attr:`min_fps` attribute value. (in **fps**)
         :rtype: float
         """
-        return self.__min_fps
+        return self.__fps_min
 
-    def set_max_fps(self, max_fps=60.0):
+    def set_fps_max(self, max_fps=60.0):
         """
         Set the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`max_fps` attribute value.
 
@@ -278,19 +294,19 @@ class Timer:
         :raise TypeError: if ``max_fps`` parameter is not a :py:data:`float` type
         """
         if type(max_fps) == float:
-            if self.get_max_fps() != max_fps:
-                self.__max_fps = max_fps
+            if self.get_fps_max() != max_fps:
+                self.__fps_max = max_fps
         else:
             raise TypeError(u'>max_fps< argument must be a float')
 
-    def get_max_fps(self):
+    def get_fps_max(self):
         """
         Get the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`max_fps` attribute value.
 
         :return: :py:attr:`max_fps` attribute value. (in **fps**)
         :rtype: float
         """
-        return self.__max_fps
+        return self.__fps_max
 
     def set_fps_increment(self, fps_increment=0.1):
         """
@@ -318,7 +334,7 @@ class Timer:
         """
         return self.__fps_increment
 
-    def set_min_fps_increment(self, min_fps_increment=0.1):
+    def set_fps_min_increment(self, fps_min_increment=0.1):
         """
         Set the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`min_fps_increment` increment.
 
@@ -329,17 +345,17 @@ class Timer:
         and :py:attr:`max_fps_increment` can make gap in a increment range, where :py:attr:`min_fps_increment` will
         force a minimal amount of increment.
 
-        :param min_fps_increment: Frames number per second. (in **fps**)
-        :type min_fps_increment: float
+        :param fps_min_increment: Frames number per second. (in **fps**)
+        :type fps_min_increment: float
         :raise TypeError: if ``min_fps_increment`` parameter is not a :py:data:`float` type
         """
-        if type(min_fps_increment) == float:
-            if self.get_min_fps_increment() != min_fps_increment:
-                self.__min_fps_increment = min_fps_increment
+        if type(fps_min_increment) == float:
+            if self.get_fps_min_increment() != fps_min_increment:
+                self.__fps_min_increment = fps_min_increment
         else:
             raise TypeError(u'>min_fps_increment< argument must be a float')
 
-    def get_min_fps_increment(self):
+    def get_fps_min_increment(self):
         """
         Get the smaller of step increment
 
@@ -350,9 +366,9 @@ class Timer:
         :return: :py:attr:`min_fps_increment` attribute value. (in **fps**)
         :rtype: float
         """
-        return self.__min_fps_increment
+        return self.__fps_min_increment
 
-    def set_max_fps_increment(self, max_fps_increment=1.0):
+    def set_fps_max_increment(self, fps_max_increment=1.0):
         """
         Set the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`max_fps_increment` increment.
 
@@ -363,17 +379,17 @@ class Timer:
         and :py:attr:`max_fps_increment` for make gap in a increment range, where :py:attr:`max_fps_increment` will
         fixe the limit .
 
-        :param max_fps_increment: Frames number per second. (in **fps**)
-        :type max_fps_increment: float
+        :param fps_max_increment: Frames number per second. (in **fps**)
+        :type fps_max_increment: float
         :raise TypeError: if ``max_fps_increment`` parameter is not a :py:data:`float` type
         """
-        if type(max_fps_increment) == float:
-            if self.get_max_fps_increment() != max_fps_increment:
-                self.__max_fps_increment = max_fps_increment
+        if type(fps_max_increment) == float:
+            if self.get_fps_max_increment() != fps_max_increment:
+                self.__fps_max_increment = fps_max_increment
         else:
             raise TypeError(u'>max_fps_increment< argument must be a float')
 
-    def get_max_fps_increment(self):
+    def get_fps_max_increment(self):
         """
         Get the bigger of step increment
 
@@ -382,11 +398,11 @@ class Timer:
         :return: :py:attr:`max_fps_increment` attribute value. (in **fps**)
         :rtype: float
         """
-        return self.__max_fps_increment
+        return self.__fps_max_increment
 
     ###
     # Internal method's
-    def _set_departure_time(self, time_value):
+    def _set_time_departure(self, time_value):
         """
         Store a :func:`Timer.get_time() <GLXBob.Timer.Timer.get_time()>` return value inside
         :py:attr:`__departure_time` attribute.
@@ -394,17 +410,17 @@ class Timer:
         :param time_value: return value inside :py:attr:`__departure_time` attribute.
         :type time_value: a :func:`Timer.get_time() <GLXBob.Timer.Timer.get_time()>` return
         """
-        if self._get_departure_time() != time_value:
-            self.__departure_time = time_value
+        if self._get_time_departure() != time_value:
+            self.__time_departure = time_value
 
-    def _get_departure_time(self):
+    def _get_time_departure(self):
         """
         Return the value set by a :func:`Timer._set_departure_time() <GLXBob.Timer.Timer._set_departure_time()>`
 
         :return: return :py:attr:`__departure_time` attribute.
         :rtype: :func:`time.time() <time.time()>`
         """
-        return self.__departure_time
+        return self.__time_departure
 
     def _set_fps_memory(self, fps_memory=None):
         """
@@ -429,6 +445,14 @@ class Timer:
         :rtype: list
         """
         return self.__fps_memory
+
+    def _push_fps_memory(self, value):
+        if len(self._get_fps_memory()) > 0:
+            self._get_fps_memory().insert(0, value)
+            if len(self._get_fps_memory()) > self._get_frame_max():
+                del self._get_fps_memory()[-1]
+        else:
+            self._get_fps_memory().insert(0, value)
 
     def _set_frame(self, frame=0):
         """
@@ -460,23 +484,23 @@ class Timer:
         """
         return self.__frame
 
-    def _set_max_frame(self, max_frame=8):
+    def _set_frame_max(self, frame_max=8):
         """
         Set the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`__frame_max` attribute.
 
         It will be use a maximum size of a list it contain :py:attr:`fps` attribute memory
 
-        :param max_frame: correspond to the buffer size
-        :type max_frame: int
+        :param frame_max: correspond to the buffer size
+        :type frame_max: int
         :raise TypeError: if ``max_frame`` parameter is not a :py:data:`int` type
         """
-        if type(max_frame) == int:
-            if self._get_max_frame() != max_frame:
-                self.__max_frame = max_frame
+        if type(frame_max) == int:
+            if self._get_frame_max() != frame_max:
+                self.__frame_max = frame_max
         else:
             raise TypeError(u'>frame_max< argument must be a int')
 
-    def _get_max_frame(self):
+    def _get_frame_max(self):
         """
         Get the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`__frame_max` attribute.
 
@@ -486,166 +510,5 @@ class Timer:
         :return: ``__frame_max`` attribute value
         :rtype: int
         """
-        return self.__max_frame
+        return self.__frame_max
 
-
-# Unittest
-class TestTimer(unittest.TestCase):
-
-    def setUp(self):
-        # Before the test start
-        print ('')
-
-    def tearDown(self):
-        # When the test is finish
-        print(str(self.shortDescription()) + ' ... OK')
-
-    # Test "fps" attribute
-    def test_get_set_fps(self):
-        """Test fps attribute with set_fps() and get_fps() method's"""
-        timer = Timer()
-        random_value = randint(1, 250)
-        timer.set_max_fps(float(random_value))
-        timer.set_fps(float(random_value))
-        self.assertEqual(float(random_value), timer.get_fps())
-
-    def test_raise_typeerror_set_fps(self):
-        """Test raise TypeError when set fps with worng type"""
-        timer = Timer()
-        random_value = randint(1, 250)
-        self.assertRaises(TypeError, timer.set_fps, int(random_value))
-
-    # Test "min_fps" attribute
-    def test_get_set_min_fps(self):
-        """Test min_fps attribute with set_min_fps() and get_min_fps() method's"""
-        timer = Timer()
-        random_value = randint(1, 250)
-        timer.set_min_fps(float(random_value))
-        self.assertEqual(timer.get_min_fps(), float(random_value))
-
-    def test_raise_typeerror_set_min_fps(self):
-        """Test raise TypeError when set min_fps with worng type"""
-        timer = Timer()
-        random_value = randint(1, 250)
-        self.assertRaises(TypeError, timer.set_min_fps, int(random_value))
-
-    # Test "max_fps" attribute
-    def test_get_set_max_fps(self):
-        """Test max_fps attribute with set_max_fps() and get_max_fps() method's"""
-        timer = Timer()
-        random_value = randint(1, 250)
-        timer.set_max_fps(float(random_value))
-        self.assertEqual(timer.get_max_fps(), float(random_value))
-
-    def test_raise_typeerror_set_max_fps(self):
-        """Test raise TypeError when set max_fps with worng type"""
-        timer = Timer()
-        random_value = randint(1, 250)
-        self.assertRaises(TypeError, timer.set_max_fps, int(random_value))
-
-    # Test "fps_increment" attribute
-    def test_get_set_fps_increment(self):
-        """Test fps_increment attribute with set_fps_increment() and get_fps_increment() method's"""
-        timer = Timer()
-        random_value = randint(1, 250)
-        timer.set_fps_increment(float(random_value))
-        self.assertEqual(timer.get_fps_increment(), float(random_value))
-
-    def test_raise_typeerror_set_fps_increment(self):
-        """Test raise TypeError when set fps_increment with worng type"""
-        timer = Timer()
-        random_value = randint(1, 250)
-        self.assertRaises(TypeError, timer.set_fps_increment, int(random_value))
-
-    # Test "min_fps_increment" attribute
-    def test_get_set_min_fps_increment(self):
-        """Test min_fps_increment attribute with set_min_fps_increment() and get_min_fps_increment() method's"""
-        timer = Timer()
-        random_value = randint(1, 250)
-        timer.set_min_fps_increment(float(random_value))
-        self.assertEqual(timer.get_min_fps_increment(), float(random_value))
-
-    def test_raise_typeerror_set_min_fps_increment(self):
-        """Test raise TypeError when set min_fps_increment with worng type"""
-        timer = Timer()
-        random_value = randint(1, 250)
-        self.assertRaises(TypeError, timer.set_min_fps_increment, int(random_value))
-
-    # Test "max_fps_increment" attribute
-    def test_get_set_max_fps_increment(self):
-        """Test max_fps_increment attribute with set_max_fps_increment() and get_min_fps_increment() method's"""
-        timer = Timer()
-        random_value = randint(1, 250)
-        timer.set_max_fps_increment(float(random_value))
-        self.assertEqual(timer.get_max_fps_increment(), float(random_value))
-
-    def test_raise_typeerror_set_max_fps_increment(self):
-        """Test raise TypeError when set max_fps_increment with worng type"""
-        timer = Timer()
-        random_value = randint(1, 250)
-        self.assertRaises(TypeError, timer.set_max_fps_increment, int(random_value))
-
-    # Test get_time()
-    def test_get_time_return(self):
-        """Test get_time() method"""
-        timer = Timer()
-        returned_value_1 = timer.get_time()
-        returned_value_2 = timer.get_time()
-        self.assertLessEqual(returned_value_1, returned_value_2)
-
-    ########################
-    # Test internal method #
-    ########################
-    # Test "max_frame" attribute
-    def test_get_set__max_frame(self):
-        """Test max_frame attribute with _set_frame_max() and _get_frame_max() method's"""
-        timer = Timer()
-        random_value = randint(1, 250)
-        timer._set_max_frame(int(random_value))
-        self.assertEqual(timer._get_max_frame(), float(random_value))
-
-    def test_raise_typeerror_set__max_frame(self):
-        """Test if _set_frame_max() raise TypeError when use a wrong type"""
-        timer = Timer()
-        random_value = randint(1, 250)
-        self.assertRaises(TypeError, timer._set_max_frame, float(random_value))
-
-    # Test "frame" attribute
-    def test_get_set__frame(self):
-        """Test frame attribute with _set_frame() and _get_frame() method's"""
-        timer = Timer()
-        random_value = randint(1, 250)
-        timer._set_frame(int(random_value))
-        self.assertEqual(timer._get_frame(), float(random_value))
-
-    def test_raise_typeerror_set__frame(self):
-        """Test if _set_frame() raise TypeError when use a wrong type"""
-        timer = Timer()
-        random_value = randint(1, 250)
-        self.assertRaises(TypeError, timer._set_frame, float(random_value))
-
-    # Test "departure_time" attribute
-    def test_get_set__departure_time(self):
-        """Test __departure_time attribute with _set_departure_time() and _get_departure_time() method's"""
-        timer = Timer()
-        tested_value = time()
-        timer._set_departure_time(tested_value)
-        self.assertEqual(timer._get_departure_time(), tested_value)
-
-    # Test "fps_memory" attribute
-    def test_get_set__fps_memory(self):
-        """Test fps_memory attribute with _set_fps_memory() and _get_fps_memory() method's"""
-        timer = Timer()
-        value_list = sample(range(30), 4)
-        timer._set_fps_memory(value_list)
-        self.assertEqual(timer._get_fps_memory(), value_list)
-
-    def test_raise_typeerror__set_fps_memory(self):
-        """Test if _set_fps_memory() raise TypeError when use a wrong type"""
-        timer = Timer()
-        random_value = randint(1, 250)
-        self.assertRaises(TypeError, timer._set_fps_memory, float(random_value))
-
-# Run test if call directly
-if __name__ == '__main__':
-    unittest.main()
