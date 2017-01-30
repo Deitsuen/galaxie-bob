@@ -146,11 +146,33 @@ class TestTimer(unittest.TestCase):
         random_value = randint(1, 250)
         self.assertRaises(TypeError, self.timer._set_fps_memory, float(random_value))
 
-    def test_if_set_fps_memory_return_list(self):
-        """Test if _get_fps_memory() return a empty list when _set_fps_memory(None)"""
-        value_list = [25.0, 25.0, 25.0, 25.0, 25.0, 25.0, 25.0, 25.0, 25.0]
+    def test_if_set_fps_memory_return_empty_list_when_param_is_none(self):
+        """Test if _get_fps_memory() return a empty list() when _set_fps_memory(None)"""
+        # our empty list
+        value_list = list()
+        # we set the None value
         self.timer._set_fps_memory(None)
+        # compare if list are equal
         self.assertListEqual(self.timer._get_fps_memory(), value_list)
+
+    def test_if_fps_memory_list_have_a_adaptive_size(self):
+        """Test: if by play with set _set_frame_max the get_fps_memory() return list have the good size"""
+        # generate a number it will represent the size of the list
+        random_value = int(randint(8, 250))
+        # generate a list it have random_value as length it contain random value
+        value_list = sample(range(251), random_value)
+        # reset the list
+        self.timer._set_fps_memory(None)
+        # permit a large list
+        self.timer._set_frame_max(random_value)
+        # push all the generated list inside the fps_memory_list
+        for value in value_list:
+            self.timer._push_fps_memory(value)
+        # check list len
+        len_1 = len(value_list)
+        len_2 = len(self.timer._get_fps_memory())
+        # it should be equal
+        self.assertEqual(len_1, len_2)
 
 # Run test if call directly
 if __name__ == '__main__':

@@ -151,7 +151,7 @@ class Timer(object):
         self.__fps_max_increment = fps_max_increment
 
         # Internal
-        self.__fps_memory = list()
+        self.__fps_memory = None
         self.__frame = 0
         self.__frame_max = 8
         self.__time_departure = None
@@ -431,7 +431,7 @@ class Timer(object):
         """
         if type(fps_memory) == list or fps_memory is None:
             if fps_memory is None:
-                fps_memory = [25.0, 25.0, 25.0, 25.0, 25.0, 25.0, 25.0, 25.0, 25.0]
+                fps_memory = list()
             if self._get_fps_memory() != fps_memory:
                 self.__fps_memory = fps_memory
         else:
@@ -447,6 +447,9 @@ class Timer(object):
         return self.__fps_memory
 
     def _push_fps_memory(self, value):
+        # check if the list is None
+        if self._get_fps_memory() is None:
+            self._set_fps_memory(None)
         if len(self._get_fps_memory()) > 0:
             self._get_fps_memory().insert(0, value)
             if len(self._get_fps_memory()) > self._get_frame_max():

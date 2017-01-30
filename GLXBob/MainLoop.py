@@ -5,6 +5,7 @@ import logging
 from time import sleep
 from random import randint
 from GLXBob import Timer
+import sys
 
 # It script it publish under GNU GENERAL PUBLIC LICENSE
 # http://www.gnu.org/licenses/gpl-3.0.en.html
@@ -12,19 +13,37 @@ from GLXBob import Timer
 
 
 class Signal(Exception):
-    """Generic exception for Galaxie-BoB"""
+    """
+    Generic Signal exception for Galaxie-BoB
 
+    The tips consist to use the Exception module as class parent
+    """
     def __init__(self, msg, original_exception, callback=None):
         super(Signal, self).__init__(msg + (": %s" % original_exception))
         self.original_exception = original_exception
 
         # Quit Message
         if msg == 'QUIT':
-            print('original_exception: ' + str(self.original_exception))
+            sys.stdout.write('\n')
+            sys.stdout.write('Exception: ' + str(self.original_exception) + '\n')
+            sys.stdout.flush()
+
             if callback is None:
                 return
             else:
                 callback()
+        elif msg == 'KEY':
+            sys.stdout.write('\n')
+            sys.stdout.write('Exception: ' + str(self.original_exception) + '\n')
+            sys.stdout.flush()
+        elif msg == 'EVENT':
+            sys.stdout.write('\n')
+            sys.stdout.write('Exception: ' + str(self.original_exception) + '\n')
+            sys.stdout.flush()
+        elif msg == 'TIMER':
+            sys.stdout.write('\n')
+            sys.stdout.write('Exception: ' + str(self.original_exception) + '\n')
+            sys.stdout.flush()
 
 
 class Singleton(type):
@@ -69,54 +88,7 @@ class MainLoop(object):
 
 
         """
-        self.event_buffer = list()
-        self._is_running = False
-
-        # context_list
-        self.context_list = list()
-        self.default_context = None
-        self._Signal__excepthook_ = None
-
-        # Time Strech
-        self.step_size = 25
-        self.max_step_size = 60
-        self.min_step_size = 1
-
-    def get_max_period_time(self):
-        """
-        If duration between frames is greater than this value, timeout will be consider.
-
-        :return: the max period in second
-        :rtype: float
-        """
-        return 1.0 / self.min_step_size
-
-    def set_step_size(self, value=25):
-        """
-        Set the tps attribute, number of milliseconds between each step
-
-        :param value:
-        :raise ValueError: If parameter value is not a float or a int
-        """
-        if type(value) == int or type(value) == float:
-            self.step_size = value
-        else:
-            raise ValueError('value must be a float or a int type')
-
-    def get_step_size(self):
-        """
-        Get the
-        :return:
-        """
-        return self.step_size
-
-    def get_step_period_time(self):
-        """
-        Get the period time in second
-
-        :return: Return a second divided by the number of Tick Per Second
-        """
-        return 1.0 / self.get_step_size()
+        self.__is_running = False
 
     def is_running(self):
         """
@@ -125,7 +97,7 @@ class MainLoop(object):
         :return: TRUE if the mainloop is currently being run.
         :rtype: Boolean
         """
-        return self._is_running
+        return self.__is_running
 
     def run(self):
         """
@@ -156,7 +128,7 @@ class MainLoop(object):
         :param boolean: 0 or True
         :type boolean: bool
         """
-        self._is_running = bool(boolean)
+        self.__is_running = bool(boolean)
 
     def _run(self):
         self.running = True
