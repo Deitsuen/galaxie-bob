@@ -27,7 +27,7 @@ class Timer(object):
                  fps_min=1.0,
                  fps_increment=0.1,
                  fps_min_increment=0.1,
-                 fps_max_increment=1.0
+                 fps_max_increment=10.0
                  ):
         """
         :param fps: how many time 1 second is divided
@@ -155,6 +155,8 @@ class Timer(object):
         self.__frame = 0
         self.__frame_max = 8
         self.__time_departure = None
+        self.__be_fast = False
+        self.__be_fast_multipli = 10
 
     def tick(self):
         """
@@ -189,6 +191,8 @@ class Timer(object):
         passed = self.get_time() - self._get_time_departure()
         differ = target - passed
 
+
+
         # Reset time reference due to time variation
         if self._get_frame() > self._get_frame_max():
             self._set_time_departure(self.get_time())
@@ -202,21 +206,44 @@ class Timer(object):
             rest_sum = sum(rest)
 
             if rest_sum > half_sum:
-                print('DOWN')
+                if self.__be_fast:
+                    self.__be_fast_multipli -= 10
+                    print('[DOWN]-> Increment ' + str(
+                        ((self.get_fps_max_increment() * self.__be_fast_multipli) / 100)) + ' fps')
+                else:
+                    self.__be_fast_multipli = 10
+                    print('[DOWN]-> Increment ' + str(self.get_fps_increment()) + ' fps')
+                self.__be_fast = False
             elif rest_sum == half_sum:
-                print('STABILIZE')
+                self.__be_fast_multipli = 10
+                self.__be_fast = False
+                print('[GOAL]-> Increment ' + str(self.get_fps_increment()) + ' fps')
             else:
-                print('UP')
+                if self.__be_fast:
+                    self.__be_fast_multipli += 10
+                    print('[ UP ]-> Increment ' + str(
+                        ((self.get_fps_max_increment() * self.__be_fast_multipli) / 100)) + ' fps')
+                else:
+                    self.__be_fast_multipli = 10
+                    print('[ UP ]-> Increment ' + str(self.get_fps_increment()) + ' fps')
+
+                self.__be_fast = True
 
         # Monitor the frame rate
         self._push_fps_memory(self.get_fps())
 
         if differ <= 0:
             # raise ValueError('cannot maintain desired FPS rate')
-            self.set_fps(self.get_fps() - self.get_fps_increment())
+            if self.__be_fast:
+                self.set_fps(self.get_fps() - ((self.get_fps_max_increment() * self.__be_fast_multipli) / 100))
+            else:
+                self.set_fps(self.get_fps() - self.get_fps_increment())
             return False
         else:
-            self.set_fps(self.get_fps() + (self.get_fps_increment()))
+            if self.__be_fast:
+                self.set_fps(self.get_fps() + ((self.get_fps_max_increment() * self.__be_fast_multipli) / 100))
+            else:
+                self.set_fps(self.get_fps() + self.get_fps_increment())
             sleep(differ)
             return True
 

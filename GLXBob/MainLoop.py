@@ -140,14 +140,15 @@ class MainLoop(object):
 
                 # Do stuff that might take significant time here
 
-                #slepp_for = 1.0 / randint(1, 20)
-                slepp_for = 1.0 / randint(20, 75)
-                sleep(slepp_for)
+                slepp_for = 1.0 / randint(30, randint(50, 200))
+                #slepp_for = 1.0 / randint(20, 75)
+                #slepp_for = 1.0 / randint(50, 200)
+                #sleep(slepp_for)
 
                 # Timer control
                 if timer.tick():
                     take_time = timer.get_time() - starting_time
-                    print('OK-> {1} fps, iteration take {0} sec, {2}'.format(
+                    print('[ OK ]-> {1} fps, iteration take {0} sec, {2}'.format(
                                                                         take_time,
                                                                         timer.get_fps(),
                                                                         timer._get_fps_memory()
@@ -155,7 +156,7 @@ class MainLoop(object):
                           )
                 else:
                     take_time = timer.get_time() - starting_time
-                    print('---> {1} fps, iteration take {0} sec, {2}'.format(
+                    print('[    ]-> {1} fps, iteration take {0} sec, {2}'.format(
                                                                         take_time,
                                                                         timer.get_fps(),
                                                                         timer._get_fps_memory()
