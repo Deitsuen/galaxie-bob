@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from time import time, sleep
+import logging
 
 # It script it publish under GNU GENERAL PUBLIC LICENSE
 # http://www.gnu.org/licenses/gpl-3.0.en.html
@@ -205,6 +206,11 @@ class Timer(object):
             if int(half_sum) == int(rest_sum):
                 self._set_be_fast_multiplicator(0)
                 self._set_be_fast(False)
+                logging.info("{0}:[GOAL]-> Increment {1} fps, {2} fps".format(
+                    self.__class__.__name__,
+                    self.get_fps_increment(),
+                    self.get_fps()
+                ))
                 print("[GOAL]-> Increment {0} fps, {1} fps".format(
                     self.get_fps_increment(),
                     self.get_fps()

@@ -3,6 +3,8 @@
 
 import logging
 from GLXBob import Timer
+from random import randint
+from time import sleep
 import sys
 
 # It script it publish under GNU GENERAL PUBLIC LICENSE
@@ -117,7 +119,7 @@ class MainLoop(object):
         , it will process events from the loop, otherwise it will simply wait.
         """
         self._set_is_running(True)
-        logging.info('Starting ' + self.__class__.__name__)
+        logging.info(self.__class__.__name__ + ': Starting ...')
         self._run()
 
     def quit(self):
@@ -130,7 +132,7 @@ class MainLoop(object):
         """
         self._set_is_running(False)
         # raise Exception("end of time")
-        logging.info('Stopping ' + self.__class__.__name__)
+        logging.info(self.__class__.__name__ + ': Stopping ...')
 
     # Internal Method's
     def _set_is_running(self, boolean):
@@ -152,10 +154,10 @@ class MainLoop(object):
 
                 # Do stuff that might take significant time here
 
-                # sleep_for = 1.0 / randint(30, randint(50, 200))
+                sleep_for = 1.0 / randint(1, randint(2, 500))
                 # sleep_for = 1.0 / randint(20, 75)
                 # sleep_for = 1.0 / randint(50, 200)
-                # sleep(sleep_for)
+                sleep(sleep_for)
 
                 # Timer control
                 if timer.tick():
@@ -176,4 +178,5 @@ class MainLoop(object):
                 break
             except MemoryError:
                 break
+        logging.info('All operation is stop')
         raise quit('All operation is stop')
