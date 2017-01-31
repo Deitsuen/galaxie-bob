@@ -24,9 +24,12 @@ class Signal(Exception):
 
         # Quit Message
         if msg == 'QUIT':
-            sys.stdout.write('\n')
-            sys.stdout.write('Exception: ' + str(self.original_exception) + '\n')
-            sys.stdout.flush()
+            try:
+                sys.stdout.write('\n')
+                sys.stdout.write('Exception: ' + str(self.original_exception) + '\n')
+                sys.stdout.flush()
+            except IOError:
+                pass
 
             if callback is None:
                 return
