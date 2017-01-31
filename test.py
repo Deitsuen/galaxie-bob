@@ -158,21 +158,35 @@ class TestTimer(unittest.TestCase):
     def test_if_fps_memory_list_have_a_adaptive_size(self):
         """Test: if by play with set _set_frame_max the get_fps_memory() return list have the good size"""
         # generate a number it will represent the size of the list
-        random_value = int(randint(8, 250))
-        # generate a list it have random_value as length it contain random value
-        value_list = sample(range(251), random_value)
-        # reset the list
+        value_random = int(randint(8, 250))
+        # generate a list it have random_value as length
+        value_list = sample(range(251), value_random)
+        # reset the list of the timer
         self.timer._set_fps_memory(None)
-        # permit a large list
-        self.timer._set_frame_max(random_value)
+        # allow the large list to be store
+        self.timer._set_frame_max(value_random)
         # push all the generated list inside the fps_memory_list
         for value in value_list:
+            # we use push method
             self.timer._push_fps_memory(value)
         # check list len
         len_1 = len(value_list)
         len_2 = len(self.timer._get_fps_memory())
         # it should be equal
         self.assertEqual(len_1, len_2)
+
+    # Test the __be_fast attribute
+    def test_get_set__be_bast(self):
+        """Test if __be_bast have the get and set methods it work"""
+        value_tested = True
+        self.timer._set_be_fast(value_tested)
+        value_returned = self.timer._get_be_fast()
+        self.assertEqual(value_tested, value_returned)
+
+    def test_raise_set__be_bast(self):
+        """Test raise TypeError when _set_be_fast() use a wrong type"""
+        self.assertRaises(TypeError, self.timer._set_be_fast, str('Hello World!'))
+
 
 # Run test if call directly
 if __name__ == '__main__':

@@ -206,20 +206,22 @@ class Timer(object):
             rest_sum = sum(rest)
 
             if rest_sum > half_sum:
-                if self.__be_fast:
+                if self._get_be_fast():
                     self.__be_fast_multipli -= 10
                     print('[DOWN]-> Increment ' + str(
                         ((self.get_fps_max_increment() * self.__be_fast_multipli) / 100)) + ' fps')
                 else:
                     self.__be_fast_multipli = 10
                     print('[DOWN]-> Increment ' + str(self.get_fps_increment()) + ' fps')
-                self.__be_fast = False
+                self._set_be_fast(False)
+
             elif rest_sum == half_sum:
                 self.__be_fast_multipli = 10
-                self.__be_fast = False
+                self._set_be_fast(False)
                 print('[GOAL]-> Increment ' + str(self.get_fps_increment()) + ' fps')
+
             else:
-                if self.__be_fast:
+                if self._get_be_fast():
                     self.__be_fast_multipli += 10
                     print('[ UP ]-> Increment ' + str(
                         ((self.get_fps_max_increment() * self.__be_fast_multipli) / 100)) + ' fps')
@@ -227,23 +229,24 @@ class Timer(object):
                     self.__be_fast_multipli = 10
                     print('[ UP ]-> Increment ' + str(self.get_fps_increment()) + ' fps')
 
-                self.__be_fast = True
+                self._set_be_fast(True)
 
         # Monitor the frame rate
         self._push_fps_memory(self.get_fps())
 
         if differ <= 0:
             # raise ValueError('cannot maintain desired FPS rate')
-            if self.__be_fast:
+            if self._get_be_fast():
                 self.set_fps(self.get_fps() - ((self.get_fps_max_increment() * self.__be_fast_multipli) / 100))
             else:
                 self.set_fps(self.get_fps() - self.get_fps_increment())
             return False
         else:
-            if self.__be_fast:
+            if self._get_be_fast():
                 self.set_fps(self.get_fps() + ((self.get_fps_max_increment() * self.__be_fast_multipli) / 100))
             else:
                 self.set_fps(self.get_fps() + self.get_fps_increment())
+            # go to bed
             sleep(differ)
             return True
 
@@ -274,7 +277,7 @@ class Timer(object):
             if self.get_fps() != clamped_value:
                 self.__fps = clamped_value
         else:
-            raise TypeError(u'>fps< argument must be a float')
+            raise TypeError(u'>fps< parameter must be a float')
 
     def get_fps(self):
         """
@@ -299,7 +302,7 @@ class Timer(object):
             if self.get_fps_min() != min_fps:
                 self.__fps_min = min_fps
         else:
-            raise TypeError(u'>min_fps< argument must be a float')
+            raise TypeError(u'>min_fps< parameter must be a float')
 
     def get_fps_min(self):
         """
@@ -324,7 +327,7 @@ class Timer(object):
             if self.get_fps_max() != max_fps:
                 self.__fps_max = max_fps
         else:
-            raise TypeError(u'>max_fps< argument must be a float')
+            raise TypeError(u'>max_fps< parameter must be a float')
 
     def get_fps_max(self):
         """
@@ -350,7 +353,7 @@ class Timer(object):
             if self.get_fps_increment() != fps_increment:
                 self.__fps_increment = fps_increment
         else:
-            raise TypeError(u'>fps< argument must be a float')
+            raise TypeError(u'>fps< parameter must be a float')
 
     def get_fps_increment(self):
         """
@@ -380,7 +383,7 @@ class Timer(object):
             if self.get_fps_min_increment() != fps_min_increment:
                 self.__fps_min_increment = fps_min_increment
         else:
-            raise TypeError(u'>min_fps_increment< argument must be a float')
+            raise TypeError(u'>min_fps_increment< parameter must be a float')
 
     def get_fps_min_increment(self):
         """
@@ -414,7 +417,7 @@ class Timer(object):
             if self.get_fps_max_increment() != fps_max_increment:
                 self.__fps_max_increment = fps_max_increment
         else:
-            raise TypeError(u'>max_fps_increment< argument must be a float')
+            raise TypeError(u'>max_fps_increment< parameter must be a float')
 
     def get_fps_max_increment(self):
         """
@@ -462,7 +465,7 @@ class Timer(object):
             if self._get_fps_memory() != fps_memory:
                 self.__fps_memory = fps_memory
         else:
-            raise TypeError(u'>fps_memory< argument must be a list or None')
+            raise TypeError(u'>fps_memory< parameter must be a list or None')
 
     def _get_fps_memory(self):
         """
@@ -500,7 +503,7 @@ class Timer(object):
             if self._get_frame() != frame:
                 self.__frame = frame
         else:
-            raise TypeError(u'>frame< argument must be a int')
+            raise TypeError(u'>frame< parameter must be a int')
 
     def _get_frame(self):
         """
@@ -528,7 +531,7 @@ class Timer(object):
             if self._get_frame_max() != frame_max:
                 self.__frame_max = frame_max
         else:
-            raise TypeError(u'>frame_max< argument must be a int')
+            raise TypeError(u'>frame_max< parameter must be a int')
 
     def _get_frame_max(self):
         """
@@ -542,3 +545,29 @@ class Timer(object):
         """
         return self.__frame_max
 
+    def _set_be_fast(self, be_fast):
+        """
+        Set the __be_fast attribute after have check if teh value is different and if type is a bollean value like:
+        True, False, O, 1
+
+        That value will be use for fast convergence, when the Timer seach for the best Frame rate
+
+        :param be_fast:
+        :type be_fast: bool
+        """
+        if type(be_fast) == bool:
+            if self._get_be_fast() is not be_fast:
+                self.__be_fast = be_fast
+        else:
+            raise TypeError(u'>be_fast< parameter must be a bool')
+
+    def _get_be_fast(self):
+        """
+        Return the value set by :func:`Timer._set_be_fast() <GLXBob.Timer.Timer._set_be_fast()>` method.
+
+        You can set :py:attr:`__be_fast` attribute with
+        :func:`Timer._set_be_fast() <GLXBob.Timer.Timer._set_be_fast()>` method.
+        :return: :py:attr:`__be_fast` attribute
+        :rtype: bool
+        """
+        return self.__be_fast
