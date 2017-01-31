@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from time import sleep
-from random import randint
 from GLXBob import Timer
 import sys
 
@@ -50,13 +48,13 @@ class Signal(Exception):
 
 
 class Singleton(type):
-    def __init__(cls, name, bases, dict):
-        super(Singleton, cls).__init__(name, bases, dict)
+    def __init__(cls, name, bases, dictionary):
+        super(Singleton, cls).__init__(name, bases, dictionary)
         cls.instance = None
 
     def __call__(cls, *args, **kw):
         if cls.instance is None:
-            cls.instance = super(Singleton, cls).__call__(*args, **kw)
+            cls.instance = super(Singleton, cls).__call__(*args)
         return cls.instance
 
 
@@ -111,7 +109,7 @@ class MainLoop(object):
         logging.info('Starting ' + self.__class__.__name__)
         self._run()
 
-    def quit(self, *args, **kw):
+    def quit(self):
         """
         Stops a MainLoop from running. Any calls to run() for the loop will return.
 
@@ -143,30 +141,26 @@ class MainLoop(object):
 
                 # Do stuff that might take significant time here
 
-                slepp_for = 1.0 / randint(30, randint(50, 200))
-                #slepp_for = 1.0 / randint(20, 75)
-                #slepp_for = 1.0 / randint(50, 200)
-                #sleep(slepp_for)
+                # sleep_for = 1.0 / randint(30, randint(50, 200))
+                # sleep_for = 1.0 / randint(20, 75)
+                # sleep_for = 1.0 / randint(50, 200)
+                # sleep(sleep_for)
 
                 # Timer control
                 if timer.tick():
 
                     take_time = timer.get_time() - starting_time
-                    print('[ OK ]-> {1} fps, iteration take {0} sec, {2}'.format(
-                                                                       take_time,
-                                                                       timer.get_fps(),
-                                                                       timer._get_fps_memory()
-                                                                       )
-                         )
+                    print('[ OK ]-> {1} fps, iteration take {0} sec'.format(
+                           take_time,
+                           timer.get_fps()
+                           ))
                 else:
 
                     take_time = timer.get_time() - starting_time
-                    print('[    ]-> {1} fps, iteration take {0} sec, {2}'.format(
-                                                                       take_time,
-                                                                       timer.get_fps(),
-                                                                       timer._get_fps_memory()
-                                                                       )
-                       )
+                    print('[    ]-> {1} fps, iteration take {0} sec'.format(
+                           take_time,
+                           timer.get_fps()
+                           ))
 
             except KeyboardInterrupt:
                 Signal("QUIT", KeyboardInterrupt, self.quit)

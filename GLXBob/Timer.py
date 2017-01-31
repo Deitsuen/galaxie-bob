@@ -160,8 +160,8 @@ class Timer(object):
 
     def tick(self):
         """
-        Emit True "when necessary" , that mean according with all the self-correcting timing algorithms and they
-        configuration attribute's
+        Return True or False "when necessary" , that mean according with all the self-correcting timing algorithms and
+        they configuration attribute's
 
 
         .. code-block:: python
@@ -201,50 +201,70 @@ class Timer(object):
             half_sum = sum(self._get_fps_memory()[:len(self._get_fps_memory()) / 2])
             rest_sum = sum(self._get_fps_memory()[len(self._get_fps_memory()) / 2:])
 
+            # It's time to analyze the result
             if int(half_sum) == int(rest_sum):
                 self._set_be_fast_multiplicator(0)
                 self._set_be_fast(False)
-                print('[GOAL]-> Increment ' + str(self.get_fps_increment()) + ' fps, ' + str(self.get_fps()) + ' fps')
+                print("[GOAL]-> Increment {0} fps, {1} fps".format(
+                    self.get_fps_increment(),
+                    self.get_fps()
+                ))
             else:
                 if half_sum < rest_sum:
                     if self._get_be_fast():
                         self._set_be_fast_multiplicator(self._get_be_fast_multiplicator() - 10)
-                        print('[DOWN]-> Increment ' + str(
-                            ((self.get_fps_max_increment() * self._get_be_fast_multiplicator()) / 100)) + ' fps, ' + str(self.get_fps()) + ' fps')
+                        print("[DOWN]-> Increment {0} fps, {1} fps".format(
+                            self._get_fps_accelerated(),
+                            self.get_fps()
+                        ))
                     else:
                         self._set_be_fast_multiplicator(10)
-                        print('[DOWN]-> Increment ' + str(self.get_fps_increment()) + ' fps, ' + str(self.get_fps()) + ' fps')
+                        print("[DOWN]-> Increment {0} fps, {1} fps".format(
+                            self.get_fps_increment(),
+                            self.get_fps()
+                        ))
                     self._set_be_fast(False)
 
                 elif half_sum > rest_sum:
                     if self._get_be_fast():
                         self._set_be_fast_multiplicator(self._get_be_fast_multiplicator() + 10)
-                        print('[ UP ]-> Increment ' + str(
-                            ((self.get_fps_max_increment() * self.__be_fast_multiplicator) / 100)) + ' fps, ' + str(self.get_fps()) + ' fps')
+                        print("[ UP ]-> Increment {0} fps, {1} fps".format(
+                            self._get_fps_accelerated(),
+                            self.get_fps()
+                        ))
                     else:
                         self._set_be_fast_multiplicator(10)
-                        print('[ UP ]-> Increment ' + str(self.get_fps_increment()) + ' fps, ' + str(self.get_fps()) + ' fps')
-
+                        print("[ UP ]-> Increment {0} fps, {1} fps".format(
+                            self.get_fps_increment(),
+                            self.get_fps()
+                        ))
                     self._set_be_fast(True)
 
         # Monitor the frame rate
         self._push_fps_memory(self.get_fps())
 
+        # Now we know how many time differ from the ideal Frame Rate
         if differ <= 0:
             # raise ValueError('cannot maintain desired FPS rate')
             if self._get_be_fast():
                 self.set_fps(self.get_fps() - (self.get_fps_max_increment() * self._get_be_fast_multiplicator() / 100))
             else:
                 self.set_fps(self.get_fps() - self.get_fps_increment())
+            # Return False that because we haven't respect the ideal frame rate
             return False
         else:
             if self._get_be_fast():
                 self.set_fps(self.get_fps() + (self.get_fps_max_increment() * self._get_be_fast_multiplicator() / 100))
             else:
                 self.set_fps(self.get_fps() + self.get_fps_increment())
-            # go to bed
+
+            # Everything is fine , we have spare time then we can sleep for the rest of the frame time
             sleep(differ)
+            # Return True that because we have respect the ideal frame rate
             return True
+
+    def _get_fps_accelerated(self):
+        return (self.get_fps_max_increment() * self._get_be_fast_multiplicator()) / 100
 
     @staticmethod
     def get_time():
@@ -266,7 +286,7 @@ class Timer(object):
         :raise TypeError: if ``fps`` parameter is not a :py:data:`float` type
         """
         if type(fps) == float:
-            # CLAMP to the abosolut value
+            # CLAMP to the absolute value
             clamped_value = abs(max(min(self.get_fps_max(), fps), self.get_fps_min()))
             # Round to two digit
             clamped_value = round(clamped_value, 2)
