@@ -75,10 +75,10 @@ class MainLoop(object):
        * Alderson loop with run() and quit() method
        * Don't use 100% of CPU Time
        * Frame Per Second adaptive limitation
+       * Limitation will be apply with a knee (percentage) it depend of the **Event list** size
 
     To Do:
        * The **Event list** size should control interact with Frame Rate Limitation
-       * Limitation will be apply with a knee (percentage) it depende of the **Event list** size
     """
     # http://code.activestate.com/recipes/579053-high-precision-fps/
     __metaclass__ = Singleton
@@ -87,16 +87,27 @@ class MainLoop(object):
         """
         :Attributes Details:
 
+        .. py:attribute:: __is_running
+
+            It is running or not
+
+              +---------------+-------------------------------+
+              | Type          | :py:data:`bool`               |
+              +---------------+-------------------------------+
+              | Flags         | Read / Write                  |
+              +---------------+-------------------------------+
+              | Default value | False                         |
+              +---------------+-------------------------------+
 
         """
         self.__is_running = False
 
     def is_running(self):
         """
-        Checks to see if the MainLoop is currently being run via run().
+        Checks to see if the :class:`MainLoop <GLXBob.MainLoop.MainLoop>` is currently being run via run().
 
         :return: TRUE if the mainloop is currently being run.
-        :rtype: Boolean
+        :rtype: bool
         """
         return self.__is_running
 
