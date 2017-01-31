@@ -187,6 +187,16 @@ class TestTimer(unittest.TestCase):
         """Test raise TypeError when _set_be_fast() use a wrong type"""
         self.assertRaises(TypeError, self.timer._set_be_fast, str('Hello World!'))
 
+    # Test the __be_fast_multiplicator attribute
+    def test_get_set_be_fast_multiplicator(self):
+        """Test if __be_fast_multiplicator have the get and set methods it work"""
+        value_random = int(randint(1, 250))
+        self.timer._set_be_fast_multiplicator(value_random)
+        self.assertEqual(self.timer._get_be_fast_multiplicator(), value_random)
+
+    def test_raise_set_be_fast_multiplicator(self):
+        """Test raise TypeError when _set_be_fast_multiplicator() use a wrong type"""
+        self.assertRaises(TypeError, self.timer._set_be_fast_multiplicator, str('Hello World!'))
 
 # Run test if call directly
 if __name__ == '__main__':

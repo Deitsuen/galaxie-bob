@@ -156,7 +156,7 @@ class Timer(object):
         self.__frame_max = 8
         self.__time_departure = None
         self.__be_fast = False
-        self.__be_fast_multipli = 10
+        self.__be_fast_multiplicator = 10
 
     def tick(self):
         """
@@ -191,45 +191,41 @@ class Timer(object):
         passed = self.get_time() - self._get_time_departure()
         differ = target - passed
 
-
-
         # Reset time reference due to time variation
+        # Should never be remove or for a true system if compensate time variation
         if self._get_frame() > self._get_frame_max():
             self._set_time_departure(self.get_time())
             self._set_frame(0)
 
-            # Determine a increment multiplicator for have fast convergence
-            ref = self._get_fps_memory()[len(self._get_fps_memory()) / 2]
-            half = self._get_fps_memory()[:len(self._get_fps_memory()) / 2]
-            rest = self._get_fps_memory()[len(self._get_fps_memory()) / 2:]
-            half_sum = sum(half)
-            rest_sum = sum(rest)
+            # Determine a increment factor for fast convergence
+            half_sum = sum(self._get_fps_memory()[:len(self._get_fps_memory()) / 2])
+            rest_sum = sum(self._get_fps_memory()[len(self._get_fps_memory()) / 2:])
 
-            if rest_sum > half_sum:
-                if self._get_be_fast():
-                    self.__be_fast_multipli -= 10
-                    print('[DOWN]-> Increment ' + str(
-                        ((self.get_fps_max_increment() * self.__be_fast_multipli) / 100)) + ' fps')
-                else:
-                    self.__be_fast_multipli = 10
-                    print('[DOWN]-> Increment ' + str(self.get_fps_increment()) + ' fps')
+            if int(half_sum) == int(rest_sum):
+                self._set_be_fast_multiplicator(0)
                 self._set_be_fast(False)
-
-            elif rest_sum == half_sum:
-                self.__be_fast_multipli = 10
-                self._set_be_fast(False)
-                print('[GOAL]-> Increment ' + str(self.get_fps_increment()) + ' fps')
-
+                print('[GOAL]-> Increment ' + str(self.get_fps_increment()) + ' fps, ' + str(self.get_fps()) + ' fps')
             else:
-                if self._get_be_fast():
-                    self.__be_fast_multipli += 10
-                    print('[ UP ]-> Increment ' + str(
-                        ((self.get_fps_max_increment() * self.__be_fast_multipli) / 100)) + ' fps')
-                else:
-                    self.__be_fast_multipli = 10
-                    print('[ UP ]-> Increment ' + str(self.get_fps_increment()) + ' fps')
+                if half_sum < rest_sum:
+                    if self._get_be_fast():
+                        self._set_be_fast_multiplicator(self._get_be_fast_multiplicator() - 10)
+                        print('[DOWN]-> Increment ' + str(
+                            ((self.get_fps_max_increment() * self._get_be_fast_multiplicator()) / 100)) + ' fps, ' + str(self.get_fps()) + ' fps')
+                    else:
+                        self._set_be_fast_multiplicator(10)
+                        print('[DOWN]-> Increment ' + str(self.get_fps_increment()) + ' fps, ' + str(self.get_fps()) + ' fps')
+                    self._set_be_fast(False)
 
-                self._set_be_fast(True)
+                elif half_sum > rest_sum:
+                    if self._get_be_fast():
+                        self._set_be_fast_multiplicator(self._get_be_fast_multiplicator() + 10)
+                        print('[ UP ]-> Increment ' + str(
+                            ((self.get_fps_max_increment() * self.__be_fast_multiplicator) / 100)) + ' fps, ' + str(self.get_fps()) + ' fps')
+                    else:
+                        self._set_be_fast_multiplicator(10)
+                        print('[ UP ]-> Increment ' + str(self.get_fps_increment()) + ' fps, ' + str(self.get_fps()) + ' fps')
+
+                    self._set_be_fast(True)
 
         # Monitor the frame rate
         self._push_fps_memory(self.get_fps())
@@ -237,20 +233,21 @@ class Timer(object):
         if differ <= 0:
             # raise ValueError('cannot maintain desired FPS rate')
             if self._get_be_fast():
-                self.set_fps(self.get_fps() - ((self.get_fps_max_increment() * self.__be_fast_multipli) / 100))
+                self.set_fps(self.get_fps() - (self.get_fps_max_increment() * self._get_be_fast_multiplicator() / 100))
             else:
                 self.set_fps(self.get_fps() - self.get_fps_increment())
             return False
         else:
             if self._get_be_fast():
-                self.set_fps(self.get_fps() + ((self.get_fps_max_increment() * self.__be_fast_multipli) / 100))
+                self.set_fps(self.get_fps() + (self.get_fps_max_increment() * self._get_be_fast_multiplicator() / 100))
             else:
                 self.set_fps(self.get_fps() + self.get_fps_increment())
             # go to bed
             sleep(differ)
             return True
 
-    def get_time(self):
+    @staticmethod
+    def get_time():
         """
         Time should be take as a serious thing, you should try to impose only one time source in you program, then the
         :class:`Timer <GLXBob.Timer.Timer>` class provide it own method for get the time by it self.
@@ -566,8 +563,34 @@ class Timer(object):
         Return the value set by :func:`Timer._set_be_fast() <GLXBob.Timer.Timer._set_be_fast()>` method.
 
         You can set :py:attr:`__be_fast` attribute with
+
         :func:`Timer._set_be_fast() <GLXBob.Timer.Timer._set_be_fast()>` method.
         :return: :py:attr:`__be_fast` attribute
         :rtype: bool
         """
         return self.__be_fast
+
+    def _set_be_fast_multiplicator(self, be_fast_multiplicator):
+        """
+        Set the :py:attr:`__be_fast_multiplicator` attribute
+
+        That value will be use for fast convergence, when the Timer seach for the best Frame rate
+
+        :param be_fast_multiplicator:
+        :type be_fast_multiplicator: int
+        """
+        if type(be_fast_multiplicator) == int:
+            if self._get_be_fast_multiplicator() != be_fast_multiplicator:
+                self.__be_fast_multiplicator = be_fast_multiplicator
+        else:
+            raise TypeError(u'>be_fast< parameter must be a bool')
+
+    def _get_be_fast_multiplicator(self):
+        """
+        Return the value set by
+        :func:`Timer._set_be_fast_multiplicator() <GLXBob.Timer.Timer._set_be_fast_multiplicator()>` method.
+
+        :return: :py:attr:`__be_fast_multiplicator` attribute
+        :rtype: int
+        """
+        return self.__be_fast_multiplicator

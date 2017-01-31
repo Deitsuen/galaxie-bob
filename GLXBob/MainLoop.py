@@ -147,21 +147,23 @@ class MainLoop(object):
 
                 # Timer control
                 if timer.tick():
+
                     take_time = timer.get_time() - starting_time
                     print('[ OK ]-> {1} fps, iteration take {0} sec, {2}'.format(
-                                                                        take_time,
-                                                                        timer.get_fps(),
-                                                                        timer._get_fps_memory()
-                                                                        )
-                          )
+                                                                       take_time,
+                                                                       timer.get_fps(),
+                                                                       timer._get_fps_memory()
+                                                                       )
+                         )
                 else:
+
                     take_time = timer.get_time() - starting_time
                     print('[    ]-> {1} fps, iteration take {0} sec, {2}'.format(
-                                                                        take_time,
-                                                                        timer.get_fps(),
-                                                                        timer._get_fps_memory()
-                                                                        )
-                        )
+                                                                       take_time,
+                                                                       timer.get_fps(),
+                                                                       timer._get_fps_memory()
+                                                                       )
+                       )
 
             except KeyboardInterrupt:
                 Signal("QUIT", KeyboardInterrupt, self.quit)
