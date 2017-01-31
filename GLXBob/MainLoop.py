@@ -160,16 +160,14 @@ class MainLoop(object):
                 # Timer control
                 if timer.tick():
 
-                    take_time = timer.get_time() - starting_time
                     print('[ OK ]-> {1} fps, iteration take {0} sec'.format(
-                           take_time,
+                           timer.get_time() - starting_time,
                            timer.get_fps()
                            ))
                 else:
 
-                    take_time = timer.get_time() - starting_time
                     print('[    ]-> {1} fps, iteration take {0} sec'.format(
-                           take_time,
+                           timer.get_time() - starting_time,
                            timer.get_fps()
                            ))
 
