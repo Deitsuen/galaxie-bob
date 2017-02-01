@@ -3,7 +3,7 @@
 
 # It script it publish under GNU GENERAL PUBLIC LICENSE
 # http://www.gnu.org/licenses/gpl-3.0.en.html
-# Author: Jérôme ORNECH alias "Tuux" <tuxa@rtnp.org> all rights reserved
+# Author: Tuux <tuxa at rtnp dot org> all rights reserved
 
 import os
 import sys
@@ -21,4 +21,11 @@ if __name__ == '__main__':
     logging.info('Started glxbob-demo')
 
     mainloop = GLXBob.MainLoop()
+
+    # 60 FPS is not so bad ...
+    mainloop.get_timer().set_fps_max(60.0)
+
+    # The Start
     mainloop.run()
+    # The End
+    quit()
