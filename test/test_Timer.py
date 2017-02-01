@@ -1,10 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import GLXBob
+
 import unittest
 from random import randint, sample
 from time import time
 import sys
+import os
+# Require when you haven't GLXBob as default Package
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(current_dir))
+import GLXBob
 
 
 # Unittest
