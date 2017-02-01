@@ -74,9 +74,9 @@ class MainLoop(object):
     That loop , should be a low power consumption, that was our target for the beginning.
 
     Feature:
-       * Alderson loop with run() and quit() method
+       * Alderson loop with **run** and **quit** method's
        * Don't use 100% of CPU Time
-       * Frame Per Second adaptive limitation
+       * Frame Per Second with adaptive limitation
        * Limitation will be apply with a knee (percentage) it depend of the **Event list** size
 
     To Do:
@@ -87,9 +87,9 @@ class MainLoop(object):
 
     def __init__(self):
         """
-        :Attributes Details:
+        :Property's Details:
 
-        .. py:attribute:: __is_running
+        .. py:data:: is_running
 
             It is running or not
 
@@ -101,16 +101,16 @@ class MainLoop(object):
               | Default value | False                         |
               +---------------+-------------------------------+
 
-        .. py:attribute:: __timer
+        .. py:data:: timer
 
-            The GLXBob.Timer() object is stored on that attribute
+            The GLXBob.Timer() object is stored on that property
 
               +---------------+-------------------------------+
               | Type          | :py:data:`GLXBob.Timer()`     |
               +---------------+-------------------------------+
               | Flags         | Read / Write                  |
               +---------------+-------------------------------+
-              | Default value | GLXBob.Timer()                |
+              | Default value | :py:data:`GLXBob.Timer()`     |
               +---------------+-------------------------------+
 
         """
@@ -119,16 +119,18 @@ class MainLoop(object):
 
     def is_running(self):
         """
-        Checks if the :class:`MainLoop <GLXBob.MainLoop.MainLoop>` is currently being run via run().
+        Checks if the :class:`MainLoop <GLXBob.MainLoop.MainLoop>` is currently being run via
+        :func:`MainLoop.run() <GLXBob.MainLoop.MainLoop.run()>` method.
 
-        :return: :py:obj:`True` if the mainloop is currently being run.
+        :return: :py:obj:`True` if the :class:`MainLoop <GLXBob.MainLoop.MainLoop>` is currently being run.
         :rtype: bool
         """
         return self.__is_running
 
     def run(self):
         """
-        Runs the mainloop until :func:`MainLoop.quit() <GLXBob.MainLoop.MainLoop.quit()>` is called on the loop.
+        Run the :class:`MainLoop <GLXBob.MainLoop.MainLoop>` until
+        :func:`MainLoop.quit() <GLXBob.MainLoop.MainLoop.quit()>` is called on the loop.
         If this is called for the thread of the loop's, it will process events from the loop,
         otherwise it will simply wait.
         """
@@ -138,12 +140,14 @@ class MainLoop(object):
 
     def quit(self):
         """
-        Stops a MainLoop from running. Any calls to run() for the loop will return.
+        Stops the  :class:`MainLoop <GLXBob.MainLoop.MainLoop>` from running. Any calls to
+        :func:`MainLoop.quit() <GLXBob.MainLoop.MainLoop.quit()>` for the loop will return.
 
-        Note that sources that have already been dispatched when quit() is called will still be executed.
+        Note that sources that have already been dispatched when
+        :func:`MainLoop.quit() <GLXBob.MainLoop.MainLoop.quit()>` is called will still be executed.
 
-        .. :warning: A MainLoop :func:`MainLoop.quit() <GLXBob.MainLoop.MainLoop.quit()>` call will certainly \
-        cause the end of you programme
+        A :func:`MainLoop.quit() <GLXBob.MainLoop.MainLoop.quit()>` call will certainly cause the end
+        of you programme.
         """
         self._set_is_running(False)
         # raise Exception("end of time")
@@ -151,11 +155,16 @@ class MainLoop(object):
 
     def set_timer(self, timer=None):
         """
-        Set the __timer attribute, buy default the class initialization create automatically a Timer() object and
-        store it in the __timer attribute. You can set you own Timer object with it method.
+        Set the :py:obj:`timer` property.
 
-        :param timer: a GLXBob.Timer() object initialize by you self or None for a default GLXBob.Timer()
-        :type timer: GLXBob.Timer()
+        Buy default the :class:`MainLoop <GLXBob.MainLoop.MainLoop>` class initialization will create
+        automatically a :class:`Timer <GLXBob.Timer.Timer>` object then store it in the :py:obj:`timer` property.
+
+        You can set you own :class:`Timer <GLXBob.Timer.Timer>` object with it method.
+
+        :param timer: a object initialize by you self or :py:obj:`None` for a self created
+           :class:`Timer <GLXBob.Timer.Timer>`
+        :type timer: GLXBob.Timer
         """
         if timer is None:
             timer = Timer()
@@ -163,10 +172,10 @@ class MainLoop(object):
 
     def get_timer(self):
         """
-        Return the __timer attribute value
+        Return the timer property value
 
-        :return: a GLXBob.Timer() Class object
-        :rtype: GLXBob.Timer()
+        :return: a object :class:`Timer <GLXBob.Timer.Timer>` ready to be requested
+        :rtype: GLXBob.Timer
         """
         return self.__timer
 
@@ -190,7 +199,8 @@ class MainLoop(object):
         """
         Get the __is_running attribute value
 
-        :return: True if the MainLoop is running or False if not
+        :return: :py:obj:`True` if the :class:`MainLoop <GLXBob.MainLoop.MainLoop>` is running
+        or :py:obj:`False` if not.
         :rtype: bool
         """
         return self.__is_running
