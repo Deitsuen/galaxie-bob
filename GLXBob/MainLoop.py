@@ -103,6 +103,7 @@ class MainLoop(object):
 
         """
         self.__is_running = False
+        self.__timer = Timer()
 
     def is_running(self):
         """
@@ -135,26 +136,41 @@ class MainLoop(object):
         logging.info(self.__class__.__name__ + ': Stopping ...')
 
     # Internal Method's
+
     def _set_is_running(self, boolean):
         """
-        Set the is_running attribute
+        Set the __is_running attribute
 
-        :param boolean: 0 or True
+        :param boolean: True or False
         :type boolean: bool
+        :raise TypeError: if ``boolean`` parameter is not a :py:data:`bool` type
         """
-        self.__is_running = bool(boolean)
+        if type(boolean) == bool:
+            if self._get_is_running() != boolean:
+                self.__is_running = boolean
+        else:
+            raise TypeError(u'>boolean< parameter must be a bool type')
+
+    def _get_is_running(self):
+        """
+        Get the __is_running attribute value
+
+        :return: True if the MainLoop is running or False if not
+        :rtype: bool
+        """
+        return self.__is_running
 
     def _run(self):
-        self.running = True
         timer = Timer(fps=30.0, fps_max=999999.9)
-        while self.is_running:
+        while self._get_is_running():
             try:
                 # Must be the first line
                 starting_time = timer.get_time()
 
                 # Do stuff that might take significant time here
 
-                sleep_for = 1.0 / randint(1, randint(2, 500))
+                # sleep_for = 1.0 / randint(1, randint(2, 500))
+                sleep_for = 1.0 / randint(40, randint(41, 500))
                 # sleep_for = 1.0 / randint(20, 75)
                 # sleep_for = 1.0 / randint(50, 200)
                 sleep(sleep_for)
@@ -177,6 +193,8 @@ class MainLoop(object):
                 Signal("QUIT", KeyboardInterrupt, self.quit)
                 break
             except MemoryError:
+                self._set_is_running(False)
+                logging.info(self.__class__.__name__ + ': MemoryError Stopping ...')
                 break
         logging.info('All operation is stop')
         raise quit('All operation is stop')

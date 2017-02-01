@@ -205,7 +205,7 @@ class TestTimer(unittest.TestCase):
 
 # Run test if call directly
 if __name__ == '__main__':
-    sys.stdout.write('Galaxie-Bob Unit Test script\n')
-    sys.stdout.write('----------------------------\n')
+    sys.stdout.write('Galaxie-Bob Unit Test Timer Class script\n')
+    sys.stdout.write('-----------------------------------------\n')
     sys.stdout.flush()
     unittest.main(verbosity=0)
