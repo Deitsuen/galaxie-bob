@@ -88,14 +88,16 @@ class Timer(object):
            The maximum Frames number per second allowed before the :class:`Timer <GLXBob.Timer.Timer>` start to rate
            limit the :py:attr:`__fps` attribute.
 
-           It can be considered as the max value of the CLAMP process
+           It can be considered as the max value of the CLAMP process.
+
+           By default it have no limit __fps_max = float("inf")
 
               +---------------+-------------------------------+
               | Type          | :py:data:`float`              |
               +---------------+-------------------------------+
               | Flags         | Read / Write                  |
               +---------------+-------------------------------+
-              | Default value | 60.0                          |
+              | Default value | float("inf")                  |
               +---------------+-------------------------------+
 
         .. py:attribute:: __fps_increment

@@ -101,6 +101,18 @@ class MainLoop(object):
               | Default value | False                         |
               +---------------+-------------------------------+
 
+        .. py:attribute:: __timer
+
+            It is running or not
+
+              +---------------+-------------------------------+
+              | Type          | :py:data:`GLXBob.Timer()`     |
+              +---------------+-------------------------------+
+              | Flags         | Read / Write                  |
+              +---------------+-------------------------------+
+              | Default value | GLXBob.Timer()                |
+              +---------------+-------------------------------+
+
         """
         self.__is_running = False
         self.__timer = Timer()
