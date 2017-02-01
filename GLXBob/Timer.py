@@ -23,8 +23,8 @@ class Timer(object):
     The :class:`Timer <GLXBob.Timer.Timer>` object update value itself and can be requested, via internal method's.
     """
     def __init__(self,
-                 fps=10.0,
-                 fps_max=60.0,
+                 fps=60.0,
+                 fps_max=float("inf"),
                  fps_min=1.0,
                  fps_increment=0.1,
                  fps_min_increment=0.1,
@@ -293,7 +293,14 @@ class Timer(object):
         """
         if type(fps) == float:
             # CLAMP to the absolute value
-            clamped_value = abs(max(min(self.get_fps_max(), fps), self.get_fps_min()))
+            if self.get_fps_max():
+                clamped_value = abs(max(min(self.get_fps_max(), fps), self.get_fps_min()))
+            else:
+                if self.get_fps_min() > fps:
+                    clamped_value = abs(fps)
+                else:
+                    clamped_value = self.get_fps_min()
+
             # Round to two digit
             clamped_value = round(clamped_value, 2)
 
@@ -380,9 +387,9 @@ class Timer(object):
 
     def get_fps_increment(self):
         """
-        Get the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`fps_increment` attribute value.
+        Get the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`__fps_increment` attribute value.
 
-        :return: :py:attr:`fps_increment` attribute value. (in **fps**)
+        :return: :py:attr:`__fps_increment` attribute value. (in **fps**)
         :rtype: float
         """
         return self.__fps_increment

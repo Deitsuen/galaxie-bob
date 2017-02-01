@@ -135,6 +135,27 @@ class MainLoop(object):
         # raise Exception("end of time")
         logging.info(self.__class__.__name__ + ': Stopping ...')
 
+    def set_timer(self, timer=None):
+        """
+        Set the __timer attribute, buy default the class initialization create automatically a Timer() object and
+        store it in the __timer attribute. You can set you own Timer object with it method.
+
+        :param timer: a GLXBob.Timer() object initialize by you self or None for a default GLXBob.Timer()
+        :type timer: GLXBob.Timer()
+        """
+        if timer is None:
+            timer = Timer()
+        self.__timer = timer
+
+    def get_timer(self):
+        """
+        Return the __timer attribute value
+
+        :return: a GLXBob.Timer() Class object
+        :rtype: GLXBob.Timer()
+        """
+        return self.__timer
+
     # Internal Method's
 
     def _set_is_running(self, boolean):
@@ -161,33 +182,32 @@ class MainLoop(object):
         return self.__is_running
 
     def _run(self):
-        timer = Timer(fps=30.0, fps_max=999999.9)
-        while self._get_is_running():
+        while self.is_running():
             try:
                 # Must be the first line
-                starting_time = timer.get_time()
+                starting_time = self.get_timer().get_time()
 
                 # Do stuff that might take significant time here
 
                 # sleep_for = 1.0 / randint(1, randint(2, 500))
-                sleep_for = 1.0 / randint(40, randint(41, 500))
+                # sleep_for = 1.0 / randint(40, randint(41, 500))
                 # sleep_for = 1.0 / randint(20, 75)
                 # sleep_for = 1.0 / randint(50, 200)
-                sleep(sleep_for)
+                # sleep(sleep_for)
 
                 # Timer control
-                if timer.tick():
+                if self.get_timer().tick():
 
                     print('[ OK ]-> {1} fps, iteration take {0} sec'.format(
-                           timer.get_time() - starting_time,
-                           timer.get_fps()
-                           ))
+                        self.get_timer().get_time() - starting_time,
+                        self.get_timer().get_fps()
+                        ))
                 else:
 
                     print('[    ]-> {1} fps, iteration take {0} sec'.format(
-                           timer.get_time() - starting_time,
-                           timer.get_fps()
-                           ))
+                        self.get_timer().get_time() - starting_time,
+                        self.get_timer().get_fps()
+                        ))
 
             except KeyboardInterrupt:
                 Signal("QUIT", KeyboardInterrupt, self.quit)
