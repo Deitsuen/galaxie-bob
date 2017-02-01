@@ -16,7 +16,7 @@ class Timer(object):
 
     The :class:`Timer <GLXBob.Timer.Timer>` object contain a self-correcting timing algorithms.
 
-    That self-correcting timing algorithms have associated attribute's it permit to control the
+    That self-correcting timing algorithms have associated property's it permit to control the
     :class:`Timer <GLXBob.Timer.Timer>` object.
 
     The power saving happen that because the loop try to use the minimum
@@ -44,21 +44,21 @@ class Timer(object):
         :type fps_min_increment: float
         :type fps_max_increment: float
 
-        :Attributes Details:
+        :Property's Details:
 
-        .. py:attribute:: __fps
+        .. py:data:: fps
 
            The number of Frames per second. (in **fps**)
 
            Note that not correspond exactly to a true movies or game FPS, it's similar but it's not.
 
-           For the :class:`Timer <GLXBob.Timer.Timer>` class, it correspond more about how many time **1 second**
+           For the :class:`Timer <GLXBob.Timer.Timer>` Class, it correspond more about how many time **1 second**
            is divided.
 
            The ``value`` passed as argument to
            :func:`Timer.set_fps() <GLXBob.Timer.Timer.set_fps()>` method is clamped
-           to lie between :py:attr:`__fps_min` and :py:attr:`__fps_max`
-           attributes.
+           to lie between :py:data:`fps_min` and :py:data:`fps_max`
+           property's.
 
               +---------------+-------------------------------+
               | Type          | :py:data:`float`              |
@@ -68,10 +68,10 @@ class Timer(object):
               | Default value | 25.0                          |
               +---------------+-------------------------------+
 
-        .. py:attribute:: __fps_min
+        .. py:data:: fps_min
 
            The min Frames number per second allowed before the :class:`Timer <GLXBob.Timer.Timer>` stop to apply
-           a rate limit to the :py:attr:`__fps` attribute. (in **fps**)
+           a rate limit to the :py:data:`fps` property. (in **fps**)
 
            It can be considered as the min value of the CLAMP process
 
@@ -83,14 +83,14 @@ class Timer(object):
               | Default value | 2.0                           |
               +---------------+-------------------------------+
 
-        .. py:attribute:: __fps_max
+        .. py:data:: fps_max
 
            The maximum Frames number per second allowed before the :class:`Timer <GLXBob.Timer.Timer>` start to rate
-           limit the :py:attr:`__fps` attribute.
+           limit the :py:data:`fps` property.
 
            It can be considered as the max value of the CLAMP process.
 
-           By default it have no limit __fps_max = float("inf")
+           By default it have no limit fps_max = float("inf")
 
               +---------------+-------------------------------+
               | Type          | :py:data:`float`              |
@@ -100,27 +100,12 @@ class Timer(object):
               | Default value | float("inf")                  |
               +---------------+-------------------------------+
 
-        .. py:attribute:: __fps_increment
+        .. py:data:: fps_increment
 
-           The self-correcting timing algorithms will try to increase or decrease :py:attr:`__fps` attribute
-           with the :py:attr:`__fps_increment` attribute value.
+           The self-correcting timing algorithms will try to increase or decrease :py:data:`fps` property
+           with the :py:data:`fps_increment` property value.
 
-           Note: the ``__fps_increment`` parameter is not clamp
-
-              +---------------+-------------------------------+
-              | Type          | :py:data:`float`              |
-              +---------------+-------------------------------+
-              | Flags         | Read / Write                  |
-              +---------------+-------------------------------+
-              | Default value | 0.1                           |
-              +---------------+-------------------------------+
-
-        .. py:attribute:: __fps_min_increment
-
-           :py:attr:`__fps_min_increment` is the lower allowed increment value
-
-           The self-correcting timing will try to adjust :py:attr:`fps` attribute
-           in range of :py:attr:`__fps_min_increment` to :py:attr:`__fps_max_increment`
+           Note: the :py:data:`fps_increment` property will be not clamped
 
               +---------------+-------------------------------+
               | Type          | :py:data:`float`              |
@@ -130,12 +115,27 @@ class Timer(object):
               | Default value | 0.1                           |
               +---------------+-------------------------------+
 
-        .. py:attribute:: __fps_max_increment
+        .. py:data:: fps_min_increment
 
-           :py:attr:`__fps_max_increment` is the upper allowed increment value
+           :py:data:`fps_min_increment` is the lower allowed increment value
 
-           The self-correcting timing will try to adjust :py:attr:`fps` attribute
-           in range of :py:attr:`__fps_min_increment` to :py:attr:`__fps_max_increment`
+           The self-correcting timing will try to adjust :py:data:`fps` property
+           in range of :py:data:`fps_min_increment` to :py:data:`fps_max_increment`
+
+              +---------------+-------------------------------+
+              | Type          | :py:data:`float`              |
+              +---------------+-------------------------------+
+              | Flags         | Read / Write                  |
+              +---------------+-------------------------------+
+              | Default value | 0.1                           |
+              +---------------+-------------------------------+
+
+        .. py:data:: fps_max_increment
+
+           :py:data:`fps_max_increment` is the upper allowed increment value
+
+           The self-correcting timing will try to adjust :py:data:`fps` property
+           in range of :py:data:`fps_min_increment` to :py:data:`fps_max_increment`
 
               +---------------+-------------------------------+
               | Type          | :py:data:`float`              |
@@ -163,8 +163,8 @@ class Timer(object):
 
     def tick(self):
         """
-        Return True or False "when necessary" , that mean according with all the self-correcting timing algorithms and
-        they configuration attribute's
+        Return :py:obj:`True` or :py:obj:`False` "when necessary" , that mean according with all the self-correcting
+        timing algorithms and they configuration property's
 
 
         .. code-block:: python
@@ -176,7 +176,8 @@ class Timer(object):
                if timer.tick():
                    print('Hello World!')
 
-        :return: :py:obj:`True` when it's time or :py:obj:`False` if the job adjustment of fps should be done
+        :return: :py:obj:`True` when it's time or :py:obj:`False` if a adjustment job of :py:data:`fps` property
+                 should be done
         :rtype: bool
         """
         if self._get_time_departure() is None:
@@ -278,7 +279,7 @@ class Timer(object):
     def get_time():
         """
         Time should be take as a serious thing, you should try to impose only one time source in you program, then the
-        :class:`Timer <GLXBob.Timer.Timer>` class provide it own method for get the time by it self.
+        :class:`Timer <GLXBob.Timer.Timer>` Class provide it own method for get the time by it self.
 
         :return: Unix time
         :rtype: int
@@ -287,7 +288,7 @@ class Timer(object):
 
     def set_fps(self, fps=25.00):
         """
-        Set the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`fps` attribute.
+        Set the :class:`Timer <GLXBob.Timer.Timer>` :py:data:`fps` property.
 
         :param fps: Frames number per second. (in **fps**)
         :type fps: float
@@ -313,48 +314,50 @@ class Timer(object):
 
     def get_fps(self):
         """
-        Get the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`fps` attribute value.
+        Get the :class:`Timer <GLXBob.Timer.Timer>` :py:data:`fps` property value.
 
-        :return: :py:attr:`fps` attribute value. (in **fps**)
+        :return: :py:data:`fps` property value. (in **fps**)
         :rtype: float
         """
         return self.__fps
 
-    def set_fps_min(self, min_fps=0.1):
+    def set_fps_min(self, fps_min=0.1):
         """
-        Set the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`min_fps` attribute value.
+        Set the :class:`Timer <GLXBob.Timer.Timer>` :py:data:`fps_min` property value.
 
         It correspond to a imposed minimal amount of frame rate
 
-        :return: :py:attr:`min_fps` attribute value. (in **fps**)
+        :return: :py:data:`fps_min` property value. (in **fps**)
         :rtype: float
-        :raise TypeError: if ``min_fps`` parameter is not a :py:data:`float` type
+        :raise TypeError: if ``fps_min`` parameter is not a :py:data:`float` type
         """
-        if type(min_fps) == float:
-            if self.get_fps_min() != min_fps:
-                self.__fps_min = min_fps
+        if type(fps_min) == float:
+            if self.get_fps_min() != fps_min:
+                self.__fps_min = fps_min
         else:
-            raise TypeError(u'>min_fps< parameter must be a float')
+            raise TypeError(u'min_fps parameter must be a float')
 
     def get_fps_min(self):
         """
-        Get the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`fps_min` attribute value.
+        Get the :class:`Timer <GLXBob.Timer.Timer>` :py:data:`fps_min` property value.
 
-        :return: :py:attr:`min_fps` attribute value. (in **fps**)
+        :return: :py:data:`fps_min` property value. (in **fps**)
         :rtype: float
         """
         return self.__fps_min
 
-    def set_fps_max(self, max_fps=60.0):
+    def set_fps_max(self, max_fps=None):
         """
-        Set the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`max_fps` attribute value.
+        Set the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`fps_max` property value.
 
-        It correspond to a imposed minimal amount of frame rate
+        It correspond to a imposed max amount of frame rate used during acceleration phase
 
-        :return: :py:attr:`max_fps` attribute value. (in **fps**)
-        :rtype: float
+        :param max_fps: :py:attr:`fps_max` property value. (in **fps**)
+        :type max_fps: :py:obj:`float` or :py:obj:`None`
         :raise TypeError: if ``max_fps`` parameter is not a :py:data:`float` type
         """
+        if max_fps is None:
+            max_fps = float("inf")
         if type(max_fps) == float:
             if self.get_fps_max() != max_fps:
                 self.__fps_max = max_fps
@@ -363,18 +366,18 @@ class Timer(object):
 
     def get_fps_max(self):
         """
-        Get the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`max_fps` attribute value.
+        Get the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`fps_max` property value.
 
-        :return: :py:attr:`max_fps` attribute value. (in **fps**)
+        :return: :py:attr:`fps_max` property value. (in **fps**)
         :rtype: float
         """
         return self.__fps_max
 
     def set_fps_increment(self, fps_increment=0.1):
         """
-        Set the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`fps_increment` increment.
+        Set the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`fps_increment` property.
 
-        The self-correcting timing algorithms will try to increase or decrease :py:attr:`fps_increment` attribute
+        The self-correcting timing algorithms will try to increase or decrease :py:attr:`fps_increment` property
         with it step increment.
 
         :param fps_increment: Frames number per second. (in **fps**)
@@ -389,61 +392,62 @@ class Timer(object):
 
     def get_fps_increment(self):
         """
-        Get the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`__fps_increment` attribute value.
+        Get the :class:`Timer <GLXBob.Timer.Timer>` :py:data:`fps_increment` property value.
 
-        :return: :py:attr:`__fps_increment` attribute value. (in **fps**)
+        :return: :py:data:`fps_increment` property value. (in **fps**)
         :rtype: float
         """
         return self.__fps_increment
 
     def set_fps_min_increment(self, fps_min_increment=0.1):
         """
-        Set the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`min_fps_increment` increment.
+        Set the :class:`Timer <GLXBob.Timer.Timer>` :py:data:`fps_min_increment` increment.
 
-        The self-correcting timing algorithms will try to increase or decrease :py:attr:`fps` attribute with
+        The algorithms will try to increase or decrease :py:data:`fps` property with
         :py:attr:`fps_increment` as step .
 
-        For fast limit rate stabilization the :class:`Timer <GLXBob.Timer.Timer>` can use :py:attr:`min_fps_increment`
-        and :py:attr:`max_fps_increment` can make gap in a increment range, where :py:attr:`min_fps_increment` will
-        force a minimal amount of increment.
+        For fast limit rate stabilization the :class:`Timer <GLXBob.Timer.Timer>` can use :py:data:`fps_min_increment`
+        and :py:data:`fps_max_increment` property for make a gap in contain in a range, where
+        :py:data:`fps_min_increment` will force a minimal amount of increment and
+        :py:data:`fps_max_increment` will force a maximal amount of increment.
 
         :param fps_min_increment: Frames number per second. (in **fps**)
         :type fps_min_increment: float
-        :raise TypeError: if ``min_fps_increment`` parameter is not a :py:data:`float` type
+        :raise TypeError: if ``fps_min_increment`` parameter is not a :py:data:`float` type
         """
         if type(fps_min_increment) == float:
             if self.get_fps_min_increment() != fps_min_increment:
                 self.__fps_min_increment = fps_min_increment
         else:
-            raise TypeError(u'>min_fps_increment< parameter must be a float')
+            raise TypeError(u'fps_min_increment parameter must be a float type')
 
     def get_fps_min_increment(self):
         """
         Get the smaller of step increment
 
-        The :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`min_fps_increment` attribute value.
+        The :class:`Timer <GLXBob.Timer.Timer>` :py:data:`fps_min_increment` property value.
 
-        See :func:`Timer.set_min_fps_increment() <GLXBob.Timer.Timer.set_min_fps_increment()>` for more information's
+        See :func:`Timer.set_fps_min_increment() <GLXBob.Timer.Timer.set_fps_min_increment()>` for more information's
 
-        :return: :py:attr:`min_fps_increment` attribute value. (in **fps**)
+        :return: :py:data:`fps_min_increment` property value. (in **fps**)
         :rtype: float
         """
         return self.__fps_min_increment
 
     def set_fps_max_increment(self, fps_max_increment=1.0):
         """
-        Set the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`max_fps_increment` increment.
+        Set the :class:`Timer <GLXBob.Timer.Timer>` :py:data:`fps_max_increment` increment.
 
-        The self-correcting timing algorithms will try to increase or decrease :py:attr:`fps` attribute with
+        The self-correcting timing algorithms will try to increase or decrease :py:data:`fps` property with
         :py:attr:`fps_increment` as step .
 
-        For fast limit rate stabilization the :class:`Timer <GLXBob.Timer.Timer>` can use :py:attr:`min_fps_increment`
-        and :py:attr:`max_fps_increment` for make gap in a increment range, where :py:attr:`max_fps_increment` will
+        For fast limit rate stabilization the :class:`Timer <GLXBob.Timer.Timer>` can use :py:data:`fps_min_increment`
+        and :py:data:`fps_max_increment` for make gap in a increment range, where :py:data:`fps_max_increment` will
         fixe the limit .
 
         :param fps_max_increment: Frames number per second. (in **fps**)
         :type fps_max_increment: float
-        :raise TypeError: if ``max_fps_increment`` parameter is not a :py:data:`float` type
+        :raise TypeError: if ``fps_max_increment`` parameter is not a :py:data:`float` type
         """
         if type(fps_max_increment) == float:
             if self.get_fps_max_increment() != fps_max_increment:
@@ -455,9 +459,9 @@ class Timer(object):
         """
         Get the bigger of step increment
 
-        Get the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`max_fps_increment` attribute value.
+        Get the :class:`Timer <GLXBob.Timer.Timer>` :py:data:`fps_max_increment` property value.
 
-        :return: :py:attr:`max_fps_increment` attribute value. (in **fps**)
+        :return: :py:data:`fps_max_increment` property value. (in **fps**)
         :rtype: float
         """
         return self.__fps_max_increment
@@ -467,9 +471,9 @@ class Timer(object):
     def _set_time_departure(self, time_value):
         """
         Store a :func:`Timer.get_time() <GLXBob.Timer.Timer.get_time()>` return value inside
-        :py:attr:`__departure_time` attribute.
+        :py:data:`departure_time` property.
 
-        :param time_value: return value inside :py:attr:`__departure_time` attribute.
+        :param time_value: return value inside :py:data:`departure_time` property.
         :type time_value: a :func:`Timer.get_time() <GLXBob.Timer.Timer.get_time()>` return
         """
         if self._get_time_departure() != time_value:
@@ -479,17 +483,18 @@ class Timer(object):
         """
         Return the value set by a :func:`Timer._set_departure_time() <GLXBob.Timer.Timer._set_departure_time()>`
 
-        :return: return :py:attr:`__departure_time` attribute.
-        :rtype: :func:`time.time() <time.time()>`
+        :return: return :py:data:`departure_time` property.
+        :rtype: Unix time
         """
         return self.__time_departure
 
     def _set_fps_memory(self, fps_memory=None):
         """
-        Store a :py:obj:`list` inside :py:attr:`__fps_memory` attribute
+        Store a :py:obj:`list` inside :py:data:`fps_memory` property
 
         :param fps_memory: :py:obj:`list` or :py:obj:`None` if want to reset the list
         :type fps_memory: :py:obj:`list` or :py:obj:`None`
+        :raise TypeError: if ``fps_memory`` parameter is not a :py:data:`list` or :py:obj:`None` type
         """
         if type(fps_memory) == list or fps_memory is None:
             if fps_memory is None:
@@ -501,9 +506,9 @@ class Timer(object):
 
     def _get_fps_memory(self):
         """
-        Get the :py:attr:`__fps_memory` attribute value
+        Get the :py:data:`fps_memory` property value
 
-        :return: :py:attr:`__fps_memory` attribute value
+        :return: :py:data:`fps_memory` property value
         :rtype: list
         """
         return self.__fps_memory
@@ -521,9 +526,9 @@ class Timer(object):
 
     def _set_frame(self, frame=0):
         """
-        Set the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`__frame` attribute.
+        Set the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`__frame` property.
 
-        It will be use a maximum size of a list it contain :py:attr:`fps` attribute memory
+        It will be use a maximum size of a list it contain :py:data:`fps` property memory
 
         It must start to int(0), and will be increase by the :class:`Timer <GLXBob.Timer.Timer>`
 
@@ -539,21 +544,21 @@ class Timer(object):
 
     def _get_frame(self):
         """
-        Get the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`__frame` attribute.
+        Get the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`__frame` property.
 
-        You can set :py:attr:`__frame` attribute with
+        You can set :py:attr:`__frame` property with
         :func:`Timer._set_frame() <GLXBob.Timer.Timer._set_frame()>` method.
 
-        :return: ``__frame`` attribute value
+        :return: ``__frame`` property value
         :rtype: int
         """
         return self.__frame
 
     def _set_frame_max(self, frame_max=8):
         """
-        Set the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`__frame_max` attribute.
+        Set the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`__frame_max` property.
 
-        It will be use a maximum size of a list it contain :py:attr:`fps` attribute memory
+        It will be use a maximum size of a list it contain :py:data:`fps` property memory
 
         :param frame_max: correspond to the buffer size
         :type frame_max: int
@@ -567,25 +572,26 @@ class Timer(object):
 
     def _get_frame_max(self):
         """
-        Get the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`__frame_max` attribute.
+        Get the :class:`Timer <GLXBob.Timer.Timer>` :py:attr:`__frame_max` property.
 
-        You can set :py:attr:`__frame_max` attribute with
+        You can set :py:attr:`__frame_max` property with
         :func:`Timer._set_frame_max() <GLXBob.Timer.Timer._set_frame_max()>` method.
 
-        :return: ``__frame_max`` attribute value
+        :return: ``__frame_max`` property value
         :rtype: int
         """
         return self.__frame_max
 
     def _set_be_fast(self, be_fast):
         """
-        Set the __be_fast attribute after have check if teh value is different and if type is a bollean value like:
+        Set the __be_fast property after have check if teh value is different and if type is a bollean value like:
         True, False, O, 1
 
         That value will be use for fast convergence, when the Timer seach for the best Frame rate
 
         :param be_fast:
         :type be_fast: bool
+        :raise TypeError: if ``be_fast`` parameter is not a :py:data:`bool` type
         """
         if type(be_fast) == bool:
             if self._get_be_fast() is not be_fast:
@@ -597,22 +603,23 @@ class Timer(object):
         """
         Return the value set by :func:`Timer._set_be_fast() <GLXBob.Timer.Timer._set_be_fast()>` method.
 
-        You can set :py:attr:`__be_fast` attribute with
+        You can set :py:attr:`__be_fast` property with
 
         :func:`Timer._set_be_fast() <GLXBob.Timer.Timer._set_be_fast()>` method.
-        :return: :py:attr:`__be_fast` attribute
+        :return: :py:attr:`__be_fast` property
         :rtype: bool
         """
         return self.__be_fast
 
     def _set_be_fast_multiplicator(self, be_fast_multiplicator):
         """
-        Set the :py:attr:`__be_fast_multiplicator` attribute
+        Set the :py:attr:`__be_fast_multiplicator` property
 
         That value will be use for fast convergence, when the Timer seach for the best Frame rate
 
         :param be_fast_multiplicator:
         :type be_fast_multiplicator: int
+        :raise TypeError: if ``be_fast_multiplicator`` parameter is not a :py:data:`int` type
         """
         if type(be_fast_multiplicator) == int:
             if self._get_be_fast_multiplicator() != be_fast_multiplicator:
@@ -625,7 +632,7 @@ class Timer(object):
         Return the value set by
         :func:`Timer._set_be_fast_multiplicator() <GLXBob.Timer.Timer._set_be_fast_multiplicator()>` method.
 
-        :return: :py:attr:`__be_fast_multiplicator` attribute
+        :return: :py:attr:`__be_fast_multiplicator` property
         :rtype: int
         """
         return self.__be_fast_multiplicator
