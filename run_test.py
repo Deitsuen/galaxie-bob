@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Found on the web
+
 import unittest
 import test.all_tests
 import sys
