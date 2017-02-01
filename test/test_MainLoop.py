@@ -26,14 +26,14 @@ class TestMainLoop(unittest.TestCase):
 
     # Test "__is_running" attribute
     def test_get_set__be_bast(self):
-        """MainLoop: Test __is_running attribute with get and set method's """
+        """MainLoop: Test '__is_running' attribute with 'Timer.get()' and 'Timer.set()' method's """
         value_tested = True
         self.mainloop._set_is_running(value_tested)
         value_returned = self.mainloop._get_is_running()
         self.assertEqual(value_tested, value_returned)
 
     def test_is_running(self):
-        """MainLoop: Test __is_running attribute with is_running method's """
+        """MainLoop: Test __is_running attribute with 'Timer.is_running' method's """
         value_tested = True
         self.mainloop._set_is_running(value_tested)
         value_returned = self.mainloop.is_running()
