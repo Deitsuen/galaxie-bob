@@ -6,7 +6,7 @@ import logging
 
 # It script it publish under GNU GENERAL PUBLIC LICENSE
 # http://www.gnu.org/licenses/gpl-3.0.en.html
-# Author: Tuux <tuxa at rtnp dot org> all rights reserved
+# Author: Tuuux <tuxa at rtnp dot org> all rights reserved
 
 
 # Reference Document: http://code.activestate.com/recipes/579053-high-precision-fps/

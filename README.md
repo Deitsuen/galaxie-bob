@@ -9,7 +9,7 @@ Description
 -----------
 The Galaxie-Bob is a MainLoop python object .
 
-The MainLoop a Alderson loop , it's something close to a infinity loop but with a MainLoop.run() and MainLoop.quit() method's.
+The MainLoop is a Alderson loop , it's mean not like infinity loop , that loop have MainLoop.run() and MainLoop.quit() method's for can stop or start the loop.
 
 The MainLoop make it work and take a adaptive sleep time for impose a global Frame Rate.
 
@@ -39,4 +39,4 @@ Readthedocs link: http://galaxie-bob.readthedocs.io/en/latest/index.html
 License
 -------
 GNU GENERAL PUBLIC LICENSE Version 3
-https://github.com/Tuuux/galaxie-curses/blob/master/LICENSE
+https://github.com/Tuuux/galaxie-bob/blob/master/LICENSE

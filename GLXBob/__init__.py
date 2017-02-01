@@ -8,11 +8,11 @@
 from GLXBob.Timer import Timer
 from GLXBob.MainLoop import MainLoop
 
-__author__ = u"Jérôme Ornech"
+__author__ = u"Tuuux"
 __copyright__ = u"Copyright 2016-2017, The Galaxie Project"
-__credits__ = [u"Jérôme Ornech alias Tuux", u"Aurélien Maury alias Mo"]
+__credits__ = [u"Tuuux", u"Aurélien Maury alias Mo"]
 __license__ = u"GNU GENERAL PUBLIC LICENSE 3.0"
 __version__ = u"0.2"
-__maintainer__ = u"Jerome Ornech"
-__email__ = u"tuux at rtnp dot org"
+__maintainer__ = u"Tuuux"
+__email__ = u"tuxa at rtnp dot org"
 __status__ = u"Development"
