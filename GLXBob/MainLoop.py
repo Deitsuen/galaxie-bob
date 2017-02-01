@@ -66,7 +66,7 @@ class MainLoop(object):
 
     The :class:`MainLoop <GLXBob.MainLoop.MainLoop>` object is a Alderson loop , it's something close to a
     infinity loop but with a :func:`MainLoop.run() <GLXBob.MainLoop.MainLoop.run()>` and
-     and :func:`MainLoop.quit() <GLXBob.MainLoop.MainLoop.quit()>` method's.
+    :func:`MainLoop.quit() <GLXBob.MainLoop.MainLoop.quit()>` method's.
 
     The :class:`MainLoop <GLXBob.MainLoop.MainLoop>` make it work and take a adaptive sleep for impose a
     global Frame Rate. Default: 25
@@ -103,7 +103,7 @@ class MainLoop(object):
 
         .. py:attribute:: __timer
 
-            It is running or not
+            The GLXBob.Timer() object is stored on that attribute
 
               +---------------+-------------------------------+
               | Type          | :py:data:`GLXBob.Timer()`     |
@@ -119,17 +119,18 @@ class MainLoop(object):
 
     def is_running(self):
         """
-        Checks to see if the :class:`MainLoop <GLXBob.MainLoop.MainLoop>` is currently being run via run().
+        Checks if the :class:`MainLoop <GLXBob.MainLoop.MainLoop>` is currently being run via run().
 
-        :return: TRUE if the mainloop is currently being run.
+        :return: :py:obj:`True` if the mainloop is currently being run.
         :rtype: bool
         """
         return self.__is_running
 
     def run(self):
         """
-        Runs a MainLoop until quit() is called on the loop. If this is called for the thread of the loop's
-        , it will process events from the loop, otherwise it will simply wait.
+        Runs the mainloop until :func:`MainLoop.quit() <GLXBob.MainLoop.MainLoop.quit()>` is called on the loop.
+        If this is called for the thread of the loop's, it will process events from the loop,
+        otherwise it will simply wait.
         """
         self._set_is_running(True)
         logging.info(self.__class__.__name__ + ': Starting ...')
@@ -141,7 +142,8 @@ class MainLoop(object):
 
         Note that sources that have already been dispatched when quit() is called will still be executed.
 
-        .. :warning: A MainLoop quit() call will certainly cause the end of you programme
+        .. :warning: A MainLoop :func:`MainLoop.quit() <GLXBob.MainLoop.MainLoop.quit()>` call will certainly \
+        cause the end of you programme
         """
         self._set_is_running(False)
         # raise Exception("end of time")
