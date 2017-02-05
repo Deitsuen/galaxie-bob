@@ -7,6 +7,7 @@
 
 from GLXBob.Timer import Timer
 from GLXBob.MainLoop import MainLoop
+from GLXBob.EventBus import EventBus
 
 __author__ = u"Tuuux"
 __copyright__ = u"Copyright 2016-2017, The Galaxie Project"

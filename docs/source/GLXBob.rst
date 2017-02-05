@@ -4,6 +4,14 @@ GLXBob package
 Submodules
 ----------
 
+GLXBob.EventBus module
+----------------------
+
+.. automodule:: GLXBob.EventBus
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 GLXBob.MainLoop module
 ----------------------
 

@@ -206,6 +206,7 @@ class Timer(object):
             rest_sum = sum(self._get_fps_memory()[len(self._get_fps_memory()) / 2:])
 
             # It's time to analyze the result
+            # First Check if that egal
             if int(half_sum) == int(rest_sum):
                 self._set_be_fast_multiplicator(0)
                 self._set_be_fast(False)
@@ -219,6 +220,7 @@ class Timer(object):
                     self.get_fps()
                 ))
             else:
+                # Check if we have to down fps
                 if half_sum < rest_sum:
                     if self._get_be_fast():
                         self._set_be_fast_multiplicator(self._get_be_fast_multiplicator() - 10)
@@ -235,6 +237,7 @@ class Timer(object):
                     self._set_be_fast(False)
 
                 elif half_sum > rest_sum:
+                    # Everything is fine , yes we can
                     if self._get_be_fast():
                         self._set_be_fast_multiplicator(self._get_be_fast_multiplicator() + 10)
                         print("[ UP ]-> Increment {0} fps, {1} fps".format(
